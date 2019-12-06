@@ -1,4 +1,4 @@
-# DYJetsToLLE
+# DYJetsToLL
 
 queryM10 = {
     "process": "DYJetsToLL_M10to50",
@@ -61,3 +61,14 @@ dy_query_ntlo = [
     queryM10,
     queryEWKZ
     ]
+
+#TT
+
+tt_query = {
+    "process": "TTTo.*",
+    "scenario": "PU2017",
+    "dbs" : ".*new_pmx.*",
+    "data": False,
+    "campaign": "RunIIFall17MiniAODv2",
+}
+
