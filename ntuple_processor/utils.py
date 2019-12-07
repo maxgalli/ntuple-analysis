@@ -3,6 +3,10 @@ import re
 import json
 
 
+
+# Classes
+
+
 class Dataset:
     def __init__(self, name, files, friends = None):
         self._name = name
@@ -40,6 +44,53 @@ class Dataset:
     def add_to_friends(*new_friends):
         for new_friend in new_friends:
             self._friends.append(new_friend)
+
+
+class Selection:
+    def __init__(
+            self, name = None,
+            cuts = None, weights = None):
+        self.set_name(name)
+        self.set_cuts(cuts)
+        self.set_weights(weights)
+
+    def get_name(self):
+        return self.__name
+
+    def get_cuts(self):
+        return self.__cuts
+
+    def get_weights(self):
+        return self.__weights
+
+    def set_name(self, name):
+        self.__name = str(name)
+
+    def set_cuts(self, cuts):
+        if cuts is not None:
+            try:
+                _check_format(cuts)
+                self.__cuts = cuts
+            except TypeError as err:
+                print(err, 'Cuts assigned to None')
+                self.__cuts = None
+        else:
+            pass
+
+    def set_weights(self, weights):
+        if weights is not None:
+            try:
+                _check_format(weights)
+                self.__weights = weights
+            except TypeError as err:
+                print(err, 'Weights assigned to None')
+                self.__weights = None
+        else:
+            pass
+
+
+
+# Functions
 
 
 def _load_database(path_to_database):
@@ -100,3 +151,18 @@ def _get_complete_filenames(directory, files):
                     )
                 )
     return full_paths
+
+
+def _check_format(list_of_dtuples):
+    if isinstance(list_of_dtuples, list):
+        for dtuple in list_of_dtuples:
+            if isinstance(dtuple, tuple)\
+                    and len(dtuple) == 2:
+                return True
+            else:
+                raise TypeError(
+                        'TypeError: tuples of lenght 2 are needed.\n')
+    else:
+        raise TypeError(
+                'TypeError: a list of tuples is needed.\n')
+
