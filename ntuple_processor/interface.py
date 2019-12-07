@@ -2,6 +2,48 @@ from ntuple_processor.utils import _load_database
 from ntuple_processor.utils import _get_nicks_with_query
 from ntuple_processor.utils import _get_complete_filenames
 from ntuple_processor.utils import Dataset
+from ntuple_processor.utils import CountBooker
+from ntuple_processor.utils import HistoBooker
+
+
+
+class ResultManager:
+    """
+    Container for 'schedule'-type objects.
+
+    Attributes:
+        __booked_counts (CountBooker): list of scheduled
+        CountBooker objects, initially empty
+        __booked_histos (HistoBooker): list of scheduled
+        HistoBooker objects, initially empty
+    """
+    def __init__(self):
+        self.__booked_counts = []
+        self.__booked_histos = []
+
+    def get_booked_counts(self):
+        return self.__booked_counts
+
+    def get_booked_histos(self):
+        return self.__booked_histos
+
+    def book_count(self, dataset, selections):
+        """Book a '.Count' operation by adding it to
+        the __booked_counts list.
+        """
+        self.__booked_counts.append(
+            CountBooker(dataset, selections))
+
+    def book_histo(self, dataset, selections,
+            binning, variable):
+        """Book a '.Histo' operation by adding it to
+        the __booked_histos list.
+        """
+        self.__booked_histos.append(
+                HistoBooker(
+                    dataset, selections,
+                    binning, variable))
+
 
 
 def dataset_from_database(
