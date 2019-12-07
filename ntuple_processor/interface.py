@@ -53,14 +53,17 @@ def dataset_from_database(
     """Create a Dataset object from a database
     in JSON format.
 
-    Keyword arguments:
-    dataset_name -- name of the dataset
-    path_to_database -- absolute path to a json file
-    queries -- dictionary or list of dictionaries
-    files_base_directories -- path (list of paths) to
-    the files base directory (directories)
-    friends_base_directories -- path (list of paths) to
-    the friends base directory (directories)
+    Args:
+        dataset_name (str): Name of the dataset
+        path_to_database (str): Absolute path to a json file
+        queries (dict, list): Dictionary or list of dictionaries
+        files_base_directories (str, list): Path (list of paths) to
+            the files base directory (directories)
+        friends_base_directories (str, list): Path (list of paths) to
+            the friends base directory (directories)
+
+    Returns:
+        dataset (Dataset): Dataset object containing .root files
     """
     database = _load_database(path_to_database)
     names = _get_nicks_with_query(database, queries)
