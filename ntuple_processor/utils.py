@@ -9,41 +9,35 @@ import json
 
 class Dataset:
     def __init__(self, name, files, friends = None):
-        self._name = name
-        self._files = files
-        self._friends = friends
+        self.__name = name
+        self.__files = files
+        self.__friends = friends
 
-    @property
-    def name(self):
-        return self._name
+    def get_name(self):
+        return self.__name
 
-    @name.setter
-    def name(self, a_name):
-        self._name = a_name
+    def set_name(self, name):
+        self.__name = name
 
-    @property
-    def files(self):
-        return self._files
+    def get_files(self):
+        return self.__files
 
-    @files.setter
-    def files(self, some_files):
-        self._files = some_files
+    def set_files(self, files):
+        self.__files = files
 
-    @property
-    def friends(self):
-        return self._friends
+    def get_friends(self):
+        return self.__friends
 
-    @friends.setter
-    def friends(self, some_friends):
-        self._friends = some_friends
+    def set_friends(self, friends):
+        self.__friends = friends
 
     def add_to_files(*new_files):
         for new_file in new_files:
-            self._files.append(new_file)
+            self.__files.append(new_file)
 
     def add_to_friends(*new_friends):
         for new_friend in new_friends:
-            self._friends.append(new_friend)
+            self.__friends.append(new_friend)
 
 
 class Selection:
