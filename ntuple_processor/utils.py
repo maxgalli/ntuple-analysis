@@ -89,6 +89,48 @@ class Selection:
             pass
 
 
+class CountBooker:
+
+    def __init__(
+            self, dataset, selections):
+        self.set_dataset(dataset)
+        self.set_selections(selections)
+
+    def get_dataset(self):
+        return self.__dataset
+
+    def get_selections(self):
+        return self.__selections
+
+    def set_dataset(self, dataset):
+        self.__dataset = dataset
+
+    def set_selections(self, selections):
+        self.__selections = selections
+
+
+class HistoBooker(CountBooker):
+
+    def __init__(
+            self, dataset, selections,
+            binning, variable):
+        CountBooker.__init__(self, dataset, selections)
+        self.set_binning(binning)
+        self.set_variable(variable)
+
+    def get_binning(self):
+        return self.__binning
+
+    def get_variable(self):
+        return self.__variable
+
+    def set_binning(self, binning):
+        self.__binning = binning
+
+    def set_variable(self, variable):
+        self.__variable = variable
+
+
 
 # Functions
 
