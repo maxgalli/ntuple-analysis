@@ -50,10 +50,10 @@ queryM50NLO_inc = {
     "campaign": "RunIIFall17MiniAODv2",
     "generator": "amcatnlo\-pythia8",
     }
-dy_query = [
+DY_query = [
     queryM50NLO_inc, queryEWKZ
     ]
-dy_query_ntlo = [
+DY_query_ntlo = [
     queryM50_inclusive_2_3jet,
     queryM50_1jet_v1,
     queryM50_1jet_ext1_v2,
@@ -72,3 +72,16 @@ tt_query = {
     "campaign": "RunIIFall17MiniAODv2",
 }
 
+#W
+
+W_query = [{
+    "process": "W.?JetsToLNu|WGToLNuG",
+    "data": False,
+    "campaign": "RunIIFall17MiniAODv2",
+    "generator": "madgraph-pythia8"
+    }, {
+    "process": "^EWKW",
+    "data": False,
+    "campaign": "RunIIFall17MiniAODv2",
+    "generator": "madgraph\-pythia8"
+    }]
