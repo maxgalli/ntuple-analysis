@@ -9,67 +9,56 @@ from ROOT import TFile
 # Classes
 
 
-class Dataset:
-    def __init__(self, name, files, friends = None):
-        self.__name = name
-        self.__files = files
-        self.__friends = friends
+class NtupleBase:
 
-    def get_name(self):
-        return self.__name
+    def __init__(self, path, directory):
+        self.path = path
+        self.directory = directory
 
-    def set_name(self, name):
-        self.__name = name
 
-    def get_files(self):
-        return self.__files
+class Friend(NtupleBase):
 
-    def set_files(self, files):
-        self.__files = files
+    pass
 
-    def get_friends(self):
-        return self.__friends
 
-    def set_friends(self, friends):
-        self.__friends = friends
+class Ntuple(NtupleBase):
 
-    def add_to_files(*new_files):
-        for new_file in new_files:
-            self.__files.append(new_file)
+    def __init__(self, path, directory, *args):
+        NtupleBase.__init__(self, path, directory)
+        self.friends = [ntuple for ntuple in args]
 
     def add_to_friends(*new_friends):
         for new_friend in new_friends:
-            self.__friends.append(new_friend)
+            self.friends.append(new_friend)
+
+
+class Dataset:
+
+    def __init__(self, name, *args):
+        self.name = name
+        self.ntuples = [ntuple for ntuple in args]
+
+    def add_to_ntuples(*new_ntuples):
+        for new_ntuple in new_ntuples:
+            self.ntuples.append(new_ntuple)
 
 
 class Selection:
     def __init__(
             self, name = None,
             cuts = None, weights = None):
-        self.set_name(name)
+        self.name = name
         self.set_cuts(cuts)
         self.set_weights(weights)
-
-    def get_name(self):
-        return self.__name
-
-    def get_cuts(self):
-        return self.__cuts
-
-    def get_weights(self):
-        return self.__weights
-
-    def set_name(self, name):
-        self.__name = str(name)
 
     def set_cuts(self, cuts):
         if cuts is not None:
             try:
                 _check_format(cuts)
-                self.__cuts = cuts
+                self.cuts = cuts
             except TypeError as err:
                 print(err, 'Cuts assigned to None')
-                self.__cuts = None
+                self.cuts = None
         else:
             pass
 
@@ -77,10 +66,10 @@ class Selection:
         if weights is not None:
             try:
                 _check_format(weights)
-                self.__weights = weights
+                self.weights = weights
             except TypeError as err:
                 print(err, 'Weights assigned to None')
-                self.__weights = None
+                self.weights = None
         else:
             pass
 
@@ -89,20 +78,8 @@ class CountBooker:
 
     def __init__(
             self, dataset, selections):
-        self.set_dataset(dataset)
-        self.set_selections(selections)
-
-    def get_dataset(self):
-        return self.__dataset
-
-    def get_selections(self):
-        return self.__selections
-
-    def set_dataset(self, dataset):
-        self.__dataset = dataset
-
-    def set_selections(self, selections):
-        self.__selections = selections
+        self.dataset = dataset
+        self.selections = selections
 
 
 class HistoBooker(CountBooker):
@@ -111,20 +88,8 @@ class HistoBooker(CountBooker):
             self, dataset, selections,
             binning, variable):
         CountBooker.__init__(self, dataset, selections)
-        self.set_binning(binning)
-        self.set_variable(variable)
-
-    def get_binning(self):
-        return self.__binning
-
-    def get_variable(self):
-        return self.__variable
-
-    def set_binning(self, binning):
-        self.__binning = binning
-
-    def set_variable(self, variable):
-        self.__variable = variable
+        self.binning = binning
+        self.variable = variable
 
 
 
