@@ -23,9 +23,9 @@ class Friend(NtupleBase):
 
 class Ntuple(NtupleBase):
 
-    def __init__(self, path, directory, *args):
+    def __init__(self, path, directory, friends = None):
         NtupleBase.__init__(self, path, directory)
-        self.friends = [ntuple for ntuple in args]
+        self.friends = friends
 
     def add_to_friends(*new_friends):
         for new_friend in new_friends:
@@ -34,9 +34,9 @@ class Ntuple(NtupleBase):
 
 class Dataset:
 
-    def __init__(self, name, *args):
+    def __init__(self, name, ntuples):
         self.name = name
-        self.ntuples = [ntuple for ntuple in args]
+        self.ntuples = ntuples
 
     def add_to_ntuples(*new_ntuples):
         for new_ntuple in new_ntuples:
@@ -94,66 +94,6 @@ class HistoBooker(CountBooker):
 
 
 # Functions
-
-
-def _load_database(path_to_database):
-    if not os.path.exists(path_to_database):
-        raise Exception
-    return json.load(open(path_to_database, "r"))
-
-
-def _check_recursively(entry, query, database):
-    for attribute in query:
-        q_att = query[attribute]
-        d_att = database[entry][attribute]
-        if isinstance(d_att, str) or isinstance(d_att, str):
-            result = re.match(q_att, d_att)
-            if result == None:
-                return False
-        elif isinstance(d_att, bool):
-            if not q_att == d_att:
-                return False
-        else:
-            raise Exception
-    return True
-
-
-def _get_nicks_with_query(database, query):
-    nicks = []
-    if isinstance(query, list):
-        for s_query in query:
-            for entry in database:
-                passed = _check_recursively(
-                    entry, s_query, database)
-                if passed:
-                    nicks.append(entry)
-    else:
-        for entry in database:
-            passed = _check_recursively(
-                entry, query, database)
-            if passed:
-                nicks.append(entry)
-    return nicks
-
-
-def _get_complete_filenames(directory, files):
-    full_paths = []
-    if isinstance(directory, list):
-        for s_directory in directory:
-            for f in files:
-                full_paths.append(
-                    os.path.join(
-                        s_directory, f, "{}.root".format(f)
-                        )
-                    )
-    else:
-        for f in files:
-            full_paths.append(
-                os.path.join(
-                    directory, f, "{}.root".format(f)
-                    )
-                )
-    return full_paths
 
 
 def _check_format(list_of_dtuples):
