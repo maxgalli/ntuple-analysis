@@ -56,7 +56,7 @@ class Selection:
     def set_cuts(self, cuts):
         if cuts is not None:
             try:
-                _check_format(cuts)
+                self.__check_format(cuts)
                 self.cuts = cuts
             except TypeError as err:
                 print(err, 'Cuts assigned to None')
@@ -67,13 +67,26 @@ class Selection:
     def set_weights(self, weights):
         if weights is not None:
             try:
-                _check_format(weights)
+                self.__check_format(weights)
                 self.weights = weights
             except TypeError as err:
                 print(err, 'Weights assigned to None')
                 self.weights = None
         else:
             pass
+
+    def __check_format(self, list_of_dtuples):
+        if isinstance(list_of_dtuples, list):
+            for dtuple in list_of_dtuples:
+                if isinstance(dtuple, tuple)\
+                        and len(dtuple) == 2:
+                    return True
+                else:
+                    raise TypeError(
+                            'TypeError: tuples of lenght 2 are needed.\n')
+        else:
+            raise TypeError(
+                    'TypeError: a list of tuples is needed.\n')
 
 
 class CountBooker:
@@ -96,20 +109,6 @@ class HistoBooker(CountBooker):
 
 
 # Functions
-
-
-def _check_format(list_of_dtuples):
-    if isinstance(list_of_dtuples, list):
-        for dtuple in list_of_dtuples:
-            if isinstance(dtuple, tuple)\
-                    and len(dtuple) == 2:
-                return True
-            else:
-                raise TypeError(
-                        'TypeError: tuples of lenght 2 are needed.\n')
-    else:
-        raise TypeError(
-                'TypeError: a list of tuples is needed.\n')
 
 
 def _get_list_of_TDF_names(st_channel, root_file_name):
