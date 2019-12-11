@@ -1,3 +1,4 @@
-from .interface import dataset_from_database
-from .interface import AnalysisFlowManager
-from .interface import RunManager
+from .booking import dataset_from_database
+from .booking import AnalysisFlowManager
+from .optimization import GraphManager
+from .run import RunManager
