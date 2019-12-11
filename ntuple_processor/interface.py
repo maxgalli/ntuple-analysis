@@ -1,10 +1,11 @@
 from ntuple_processor.utils import Dataset
-from ntuple_processor.utils import CountBooker
-from ntuple_processor.utils import HistoBooker
 from ntuple_processor.utils import _add_trees_from_dataset_files_to_TChain
 from ntuple_processor.utils import Friend
 from ntuple_processor.utils import Ntuple
 from ntuple_processor.utils import Dataset
+from ntuple_processor.utils import Action
+from ntuple_processor.utils import BookCount
+from ntuple_processor.utils import BookHisto
 
 from ROOT import TChain
 from ROOT import RDataFrame
@@ -19,42 +20,96 @@ logger = logging.getLogger(__name__)
 
 
 
-class ResultManager:
+class AnalysisFlowUnit:
     """
-    Container for 'schedule'-type objects.
+    Building block of a minimal analysis flow, consisting
+    of a dataset, a set of selections to apply on the data
+    and an action.
 
     Attributes:
-        __booked_counts (CountBooker): list of scheduled
-        CountBooker objects, initially empty
-        __booked_histos (HistoBooker): list of scheduled
-        HistoBooker objects, initially empty
+        dataset (Dataset): Set of TTree objects to run the
+            analysis on
+        selections (list): List of Selection-type objects
+        action (Action): Action to perform on the processed
+            dataset, can be 'Histo1D' or 'Sum'
     """
-    def __init__(self):
-        self.__booked_counts = []
-        self.__booked_histos = []
+    def __init__(
+            self,
+            dataset, selections, action = None):
+        self.__set_dataset(dataset)
+        self.__set_selections(selections)
+        self.__set_action(action)
 
-    def get_booked_counts(self):
-        return self.__booked_counts
+    def __str__(self):
+        layout = '\n'.join([
+            'Dataset: {}'.format(self.dataset.name),
+            'Selections: {}'.format(self.selections),
+            'Action: {}'.format(self.action)])
+        return layout
 
-    def get_booked_histos(self):
-        return self.__booked_histos
+    def book_count(self):
+        self.action = BookCount()
 
-    def book_count(self, dataset, selections):
-        """Book a '.Count' operation by adding it to
-        the __booked_counts list.
-        """
-        self.__booked_counts.append(
-            CountBooker(dataset, selections))
+    def book_histo(self, binning, variable):
+        self.action = BookHisto(
+            self.binning, self.variable)
 
-    def book_histo(self, dataset, selections,
+    def __set_dataset(self, dataset):
+        if isinstance(dataset, Dataset):
+            self.dataset = dataset
+        else:
+            raise TypeError(
+                'TypeError: not a Dataset object.')
+
+    def __set_selections(self, selections):
+        if isinstance(selections, list):
+            self.selections = selections
+        else:
+            raise TypeError(
+                'TypeError: not a list object.')
+
+    def __set_action(self, action):
+        if isinstance(action, Action):
+            self.action = action
+        else:
+            raise TypeError(
+                    'TypeError: not an Action object.')
+
+
+class AnalysisFlowManager:
+    """
+    Manager of all the AnalysisFlowUnit objects that are created.
+    It can both be initialized with a variable amount of AnalysisFlowUnit
+    objects as arguments or with no arguments, with the above mentioned
+    objects added in a second time with the functions 'book_count' and
+    'book_histo'.
+
+    Args:
+        *args (AnalysisFlowUnit): Objects with the structure [dataset,
+            selections, action]
+
+    Attributes:
+        booked_units (list): List of the booked units, updated during
+            initialization or with the functions 'book_count' and
+            'booked_histo'
+    """
+
+    def __init__(self, *args):
+        self.booked_units = [arg for arg in args]
+
+    def book_count(self,
+            dataset, selections):
+        self.booked_units.append(
+            AnalysisFlowUnit(
+                dataset, selections, BookCount()))
+
+    def book_histo(self,
+            dataset, selections,
             binning, variable):
-        """Book a '.Histo' operation by adding it to
-        the __booked_histos list.
-        """
-        self.__booked_histos.append(
-                HistoBooker(
-                    dataset, selections,
-                    binning, variable))
+        self.booked_units.append(
+            AnalysisFlowUnit(
+                dataset, selections, BookHisto(
+                    binning, variable)))
 
 
 class RunManager:

@@ -89,20 +89,21 @@ class Selection:
                     'TypeError: a list of tuples is needed.\n')
 
 
-class CountBooker:
+class Action:
+    def __init__(self, name):
+        self.name = name
 
+
+class BookCount(Action):
+    def __init__(self):
+        self.name = 'Count'
+
+
+class BookHisto(Action):
     def __init__(
-            self, dataset, selections):
-        self.dataset = dataset
-        self.selections = selections
-
-
-class HistoBooker(CountBooker):
-
-    def __init__(
-            self, dataset, selections,
+            self,
             binning, variable):
-        CountBooker.__init__(self, dataset, selections)
+        self.name = 'Histo1D'
         self.binning = binning
         self.variable = variable
 
