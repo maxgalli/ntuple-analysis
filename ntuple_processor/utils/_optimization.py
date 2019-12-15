@@ -9,3 +9,11 @@ class Node:
         self.afu_block = afu_block
         self.children = [
             child for child in children]
+
+    def __str__(self):
+        layout = '\n'.join([
+            'Name: {}'.format(self.name),
+            'Kind: {}'.format(self.kind),
+            'AnalysisFlowUnit: {}'.format(self.afu_block),
+            'Children: {}'.format(self.children)])
+        return layout
