@@ -1,10 +1,10 @@
-from ntuple_processor.utils import Dataset
-from ntuple_processor.utils import Friend
-from ntuple_processor.utils import Ntuple
+from .utils import Dataset
+from .utils import Friend
+from .utils import Ntuple
 
-from ntuple_processor.utils import Action
-from ntuple_processor.utils import BookCount
-from ntuple_processor.utils import BookHisto
+from .utils import Action
+from .utils import BookCount
+from .utils import BookHisto
 
 from ROOT import TFile
 
@@ -32,13 +32,13 @@ class DatasetFromDatabase:
     def __call__(
             self,
             dataset_name, path_to_database,
-            queries, channel,
+            queries, folder,
             files_base_directories,
             friends_base_directories):
         if self.dataset is None:
             self.dataset = self.inner_dataset_from_database(
                 dataset_name, path_to_database,
-                queries, channel,
+                queries, folder,
                 files_base_directories,
                 friends_base_directories)
         return self.dataset
@@ -46,17 +46,30 @@ class DatasetFromDatabase:
     def inner_dataset_from_database(
             self,
             dataset_name, path_to_database,
-            queries, channel,
+            queries, folder,
             files_base_directories,
             friends_base_directories):
         """Create a Dataset object from a database
-        in JSON format.
+        in JSON format. In this specific case (KAPPA
+        database), a dataset will have the following
+        format (all folder names are equal):
+            ntuple1: /file_base_dir/root_file1/folder/ntuple
+                friend1: /friend1_base_dir/root_file1/folder/ntuple
+                friend2: /friend2_base_dir/root_file1/folder/ntuple
+            ntuple2: /file_base_dir/root_file2/folder/ntuple
+                friend1: /friend1_base_dir/root_file2/folder/ntuple
+                friend2: /friend2_base_dir/root_file2/folder/ntuple
+            ntuple3: /file_base_dir/root_file3/folder/ntuple
+                friend1: /friend1_base_dir/root_file3/folder/ntuple
+                friend2: /friend2_base_dir/root_file3/folder/ntuple
+            (...)
 
         Args:
             dataset_name (str): Name of the dataset
             path_to_database (str): Absolute path to a json file
             queries (dict, list): Dictionary or list of dictionaries
-            channel (str): Channel that determines also the queries
+                containing queries to retrieve specific .root files
+            folder (str): Name of the TDirectoryFile
             files_base_directories (str, list): Path (list of paths) to
                 the files base directory (directories)
             friends_base_directories (str, list): Path (list of paths) to
@@ -67,6 +80,8 @@ class DatasetFromDatabase:
         """
         def load_database(path_to_database):
             if not os.path.exists(path_to_database):
+                logger.fatal('No database available for {}'.format(
+                    path_to_database))
                 raise Exception
             return json.load(open(path_to_database, "r"))
 
@@ -112,25 +127,39 @@ class DatasetFromDatabase:
                     )
             return full_paths
 
-        def get_full_tree_names(
-                channel, path_to_root_file, tree_name):
+        def get_full_tree_name(
+                folder, path_to_root_file, tree_name):
             root_file = TFile(path_to_root_file)
-            full_tree_names = []
-            for key in root_file.GetListOfKeys():
-                if key.GetName().startswith(channel):
-                    full_tree_names.append(
-                        '/'.join([key.GetName(), tree_name]))
-            return full_tree_names
+            if root_file.IsZombie():
+                logger.warning(
+                    'File {} does not exist, zombie created'.format(
+                        path_to_root_file))
+                return None
+            else:
+                if folder not in root_file.GetListOfKeys():
+                    raise NameError(
+                        'Folder not in {}\n'.format(path_to_root_file))
+                full_tree_name = '/'.join([folder, tree_name])
+                return full_tree_name
 
         database = load_database(path_to_database)
         names = get_nicks_with_query(database, queries)
+
+        # E.g.: file_base_dir/file_name.root
         root_files = get_complete_filenames(
             files_base_directories, names)
+        logger.debug('.root files for dataset {}'.format(
+            dataset_name, root_files))
         ntuples = []
+
+        # E.g.: file_base_dir/file_name1.root/folder/ntuple
+        #       file_base_dir/file_name2.root/folder/ntuple
         for (root_file, name) in zip(root_files, names):
-            tdfs_tree = get_full_tree_names(
-                channel, root_file, 'ntuple')
-            for tdf_tree in tdfs_tree:
+            tdf_tree = get_full_tree_name(
+                folder, root_file, 'ntuple')
+            if tdf_tree:
+                logger.debug('Complete tree folder: {}'.format(
+                    tdf_tree))
                 friends = []
                 friend_paths = []
                 for friends_base_directory in friends_base_directories:
@@ -140,6 +169,13 @@ class DatasetFromDatabase:
                     friends.append(Friend(friend_path, tdf_tree))
                 ntuples.append(Ntuple(root_file, tdf_tree, friends))
         dataset = Dataset(dataset_name, ntuples)
+        # Debug
+        for ntuple in ntuples:
+            logger.debug('Ntuple, path: {} and folder: {}'.format(
+                ntuple.path, ntuple.directory))
+            for friend in ntuple.friends:
+                logger.debug('  Friends: path: {}, folder: {}'.format(
+                    friend.path, friend.directory))
         return dataset
 
 dataset_from_database = DatasetFromDatabase()
@@ -155,7 +191,7 @@ class AnalysisFlowUnit:
             analysis on
         selections (list): List of Selection-type objects
         action (Action): Action to perform on the processed
-            dataset, can be 'Histo1D' or 'Sum'
+            dataset, can be 'BookHisto' or 'BookCount'
     """
     def __init__(
             self,
@@ -234,4 +270,3 @@ class AnalysisFlowManager:
             AnalysisFlowUnit(
                 dataset, selections, BookHisto(
                     binning, variable)))
-
