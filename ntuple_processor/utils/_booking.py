@@ -88,14 +88,14 @@ class Action:
 
 class BookCount(Action):
     def __init__(self):
-        self.name = 'Count'
+        self.name = 'BookCount'
 
 
 class BookHisto(Action):
     def __init__(
             self,
             binning, variable):
-        self.name = 'Histo1D'
+        self.name = 'BookHisto'
         self.binning = binning
         self.variable = variable
 
