@@ -28,6 +28,32 @@ class Graph(dict):
             for node in nodes:
                 self[node.name] = node
 
+    def __merge(self, other):
+        res = Graph()
+        if self.__check_dataset_node(other):
+            for (me_key, me_val) in self.items():
+                res[me_key] = me_val
+                if me_key in other.keys():
+                    for child in other[me_key].children:
+                        if child not in me_val.children:
+                            res[me_key].children.append(
+                                child)
+            for (o_key, o_val) in self.items():
+                if o_key not in res.keys():
+                    res[o_key] = o_val
+        return res
+
+    def __check_dataset_node(self, other):
+        for (me_key, me_val) in self.items():
+            # Check that the dataset is the same, otherwise
+            # raise error
+            if me_val.kind == 'dataset':
+                if me_key not in other.keys():
+                    raise NotImplementedError(
+                        'Only Graphs with the same Dataset node can be added')
+                else:
+                    return True
+
     def __nodes_from_afu(self, afu):
         nodes = []
         nodes.append(
