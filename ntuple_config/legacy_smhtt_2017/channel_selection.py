@@ -46,3 +46,17 @@ tt_channel = Selection(name = "tt",
             ("q_1*q_2<0", "os"),
             ("(trg_doubletau_35_tightiso_tightid == 1) || (trg_doubletau_40_mediso_tightid == 1) || (trg_doubletau_40_tightiso == 1)", "trg_selection")
         ])
+
+em_channel = Selection(name = "em",
+    cuts = [
+            ("flagMETFilter == 1", "METFilter"),
+            ("extraelec_veto<0.5", "extraelec_veto"),
+            ("extramuon_veto<0.5", "extramuon_veto"),
+            ("dilepton_veto<0.5", "dilepton_veto"),
+            ("iso_1<0.15", "ele_iso"),
+            ("iso_2<0.2", "muon_iso"),
+            ("q_1*q_2<0", "os"),
+            ("pt_2>10 && ((trg_muonelectron_mu23ele12 == 1) || (trg_muonelectron_mu8ele23 == 1))",
+                "trg_selection")
+        ])
+
