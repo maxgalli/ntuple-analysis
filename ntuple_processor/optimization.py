@@ -83,4 +83,21 @@ class GraphManager:
         # there is only one operation at the end, but in the optimization process
         # we need to add another part to the name since in a graph we can have more
         # than one histo or sum and we need to distnguish
-        pass
+        self.merge_datasets()
+
+    def merge_datasets(self):
+        logger.debug('Merge datasets:')
+        merged_graphs = list()
+        for graph in self.graphs:
+            if graph not in merged_graphs:
+                merged_graphs.append(graph)
+            else:
+                for merged_graph in merged_graphs:
+                    if merged_graph == graph:
+                        for child in graph.children:
+                            merged_graph.children.append(child)
+        # Debug
+        logger.debug('Merged graphs:')
+        for graph in merged_graphs:
+            logger.debug(graph)
+        self.graphs = merged_graphs
