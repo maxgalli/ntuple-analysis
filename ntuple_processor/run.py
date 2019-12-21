@@ -2,8 +2,6 @@ from ROOT import RDataFrame
 from ROOT import TFile
 from ROOT import TTree
 
-from copy import deepcopy
-
 import logging
 logger = logging.getLogger(__name__)
 
@@ -30,33 +28,9 @@ class RunManager:
     def __init__(self, graphs):
         self.final_ptrs = []
         for graph in graphs:
-            # Create a dictionary with the same keys of the graph
-            # one, that will be filled with RDataFrame objects:
-            # since every key is a node of the Graph, the RDataFrame
-            # associated to it is the pointer returned from the action
-            # applied by the node on the RDataFrame associated to the
-            # previous node.
-            rdf_graph = deepcopy(graph)
-            for node in graph.values():
-                if node.kind == 'action':
-                    continue
-                if node.kind == 'dataset':
-                    rdf_graph[node.name] = self.__rdf_from_dataset(
-                        node.afu_block)
-                for child in node.children:
-                    kind = graph[child].kind
-                    afu_block = graph[child].afu_block
-                    if kind == 'selection':
-                        rdf_graph[child] = self.__filter_from_selection(
-                            rdf_graph[node.name], afu_block)
-                    elif kind == 'action':
-                        if 'Count' in child:
-                            rdf_graph[child] = self.__sum_from_count(
-                                rdf_graph[node.name], afu_block)
-                        elif 'Histo' in child:
-                            rdf_graph[child] = self.__histo1d_from_histo(
-                                rdf_graph[node.name], afu_block)
-                        self.final_ptrs.append(rdf_graph[child])
+            self.__node_to_root(graph)
+        logger.debug('Final pointers: {}'.format(
+            self.final_ptrs))
 
     def run_locally(self, of_name):
         """Save to file the histograms booked.
@@ -69,6 +43,32 @@ class RunManager:
         for op in self.final_ptrs:
             op.Write()
         root_file.Close()
+
+    def __node_to_root(self, node, rdf = None):
+        logger.debug('Graph to ROOT convertion:\nNode:\n{}'.format(
+            node))
+        if node.kind == 'dataset':
+            result = self.__rdf_from_dataset(
+                node.afu_block)
+        elif node.kind == 'selection':
+            result = self.__filter_from_selection(
+                rdf, node.afu_block)
+        elif node.kind == 'action':
+            if 'Count' in node.name:
+                result = self.__sum_from_count(
+                    rdf, node.afu_block)
+            elif 'Histo' in node.name:
+                result = self.__histo1d_from_histo(
+                    rdf, node.afu_block)
+        if node.children:
+            for child in node.children:
+                logger.debug('Do not return, apply actions in:\n\
+                        {}\n on RDF:\n{}'.format(child, result))
+                self.__node_to_root(child, result)
+        else:
+            logger.debug('Final return: append \n{} to final pointers'.format(
+                result))
+            self.final_ptrs.append(result)
 
     def __rdf_from_dataset(self, dataset):
         t_names = [ntuple.directory for ntuple in \

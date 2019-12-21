@@ -7,58 +7,49 @@ logger = logging.getLogger(__name__)
 
 
 
-class Graph(dict):
+class Graph(Node):
     """
-    Way to represent a complete analysis flow which takes into
-    consideration overlapping operations, condensing them in
-    the same block.
-    Dictionary of nodes, where every node is an object containing
-    a name, a kind (dataset, selection, action), the corresponding
-    block in the AnalysisFlowUnit world and a list of children.
+    A Graph is itself a node where every has other nodes as children.
+    Due to the way it is constructed, the root node will always be of
+    kind 'dataset'.
 
     Args:
         analysis_flow_unit (AnalysisFlowUnit): analysis flow unit
             object from which a graph in its basic form is generated
     """
-    def __init__(self,
-            analysis_flow_unit = None):
-        if analysis_flow_unit:
-            nodes = self.__nodes_from_afu(
-                analysis_flow_unit)
-            for node in nodes:
-                self[node.name] = node
+    def __init__(self, afu = None):
+        if afu:
+            Node.__init__(self,
+                afu.dataset.name,
+                'dataset',
+                afu.dataset)
+            nodes = self.__nodes_from_afu(afu)
+            for no_last, no_first in zip(
+                    nodes[:-1], nodes[1:]):
+                no_last.children.append(no_first)
+            self.children.append(nodes[0])
+            # Debug
+            def print_info(graph):
+                for child in graph.children:
+                    print('Node: \n{} \nChild: \n{}\n'.format(
+                        graph, child))
+                    print_info(child)
+            logger.debug('\nConstruct graph from AFU:\n')
+            logger.debug(print_info(self))
 
     def __nodes_from_afu(self, afu):
         nodes = []
-        nodes.append(
-            Node(
-                afu.dataset.name,
-                'dataset',
-                afu.dataset,
-                afu.selections[0].name))
-        for (no_l, no_f) in \
-                zip(afu.selections[:-1], afu.selections[1:]):
+        for selection in afu.selections:
             nodes.append(
                 Node(
-                    no_l.name,
+                    selection.name,
                     'selection',
-                    no_l,
-                    no_f.name))
-        nodes.append(
-            Node(
-                afu.selections[-1:][0].name,
-                'selection',
-                afu.selections[-1:][0],
-                afu.action.name))
+                    selection))
         nodes.append(
             Node(
                 afu.action.name,
                 'action',
                 afu.action))
-        # Debug
-        logger.debug('Nodes in graph imported from AFU:\n')
-        for node in nodes:
-            logger.debug(node)
         return nodes
 
 
