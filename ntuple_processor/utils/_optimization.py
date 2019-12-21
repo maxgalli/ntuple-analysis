@@ -20,18 +20,15 @@ class Node:
 
     def __eq__(self, other):
         logger.debug('__eq__ compares: {} with {},\
-            {} with {}, {} with {} and {} with {}.'.format(
+            {} with {} and {} with {}.'.format(
                 self.name, other.name,
                 self.kind, other.kind,
-                self.afu_block, other.afu_block,
-                self.children, other.children))
+                self.afu_block, other.afu_block))
         return self.name == other.name and \
             self.kind == other.kind and \
-            self.afu_block == other.afu_block and \
-            self.children == other.children
+            self.afu_block == other.afu_block
 
     def __hash__(self):
         return hash((
-            self.name, self.kind, self.afu_block,
-            tuple(self.children)))
+            self.name, self.kind, self.afu_block))
 
