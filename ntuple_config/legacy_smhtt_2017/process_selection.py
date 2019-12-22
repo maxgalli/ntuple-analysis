@@ -1,5 +1,8 @@
 from ntuple_processor.utils import Selection
 
+
+##### Drell-Yan #####
+
 DY_process_base_weights = [
     ("puweight", "puweight"),
     ("idWeight_1*idWeight_2","idweight"),
@@ -28,4 +31,21 @@ DY_process_weights_nlo.append((
 DY_process_selection = Selection(name = "DrellYan",
                                  weights = DY_process_weights)
 DY_nlo_process_selection = Selection(name = "DrellYan_nlo",
-                                      weights = DY_process_weights_nlo)
+                                     weights = DY_process_weights_nlo)
+
+
+##### ZTauTau #####
+
+def ZTT_process_selection(channel):
+    if "mt" in channel:
+        tt_cut = "gen_match_1==4 && gen_match_2==5"
+    elif "et" in channel:
+        tt_cut = "gen_match_1==3 && gen_match_2==5"
+    elif "tt" in channel:
+        tt_cut = "gen_match_1==5 && gen_match_2==5"
+    elif "em" in channel:
+        tt_cut = "gen_match_1==3 && gen_match_2==4"
+    elif "mm" in channel:
+        tt_cut = "gen_match_1==4 && gen_match_2==4"
+    return Selection(name = "ZTT",
+                     cuts = [(tt_cut, "ztt_cut")])
