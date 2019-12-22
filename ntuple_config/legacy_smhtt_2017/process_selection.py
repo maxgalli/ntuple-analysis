@@ -100,3 +100,24 @@ def ZTT_embedded_process_selection(channel):
                      cuts = ztt_embedded_cuts,
                      weights = ztt_embedded_weights)
 
+
+##### ZL #####
+
+def ZL_process_selection(channel):
+    if "mt" in channel:
+        emb_veto = "!(gen_match_1==4 && gen_match_2==5)"
+        ff_veto = "!(gen_match_2 == 6)"
+    elif "et" in channel:
+        emb_veto = "!(gen_match_1==3 && gen_match_2==5)"
+        ff_veto = "!(gen_match_2 == 6)"
+    elif "tt" in channel:
+        emb_veto = "!(gen_match_1==5 && gen_match_2==5)"
+        ff_veto = "!(gen_match_1 == 6 || gen_match_2 == 6)"
+    elif "em" in channel:
+        emb_veto = "!(gen_match_1==3 && gen_match_2==4)"
+        ff_veto = "(1.0)"
+    elif "mm" in channel:
+        emb_veto = "!(gen_match_1==4 && gen_match_2==4)"
+        ff_veto = "(1.0)"
+    return Selection(name = "ZL",
+                     cuts = [("%s && %s"%(emb_veto,ff_veto), "dy_emb_and_ff_veto")])
