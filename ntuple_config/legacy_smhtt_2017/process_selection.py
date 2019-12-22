@@ -74,7 +74,7 @@ def tau_by_iso_id_weight(channel):
     return weight
 
 
-def ele_hlt_vtx_weight(channel):
+def ele_hlt_Z_vtx_weight(channel):
     weight = ("1.0","eleHLTZvtxWeight")
     if "et" in channel:
         weight = ("(trg_singleelectron_35 || trg_singleelectron_32 || trg_singleelectron_27 || trg_crossele_ele24tau30)*0.991 + (!(trg_singleelectron_35 || trg_singleelectron_32 || trg_singleelectron_27 || trg_crossele_ele24tau30))*1.0", "eleHLTZvtxWeight")
@@ -116,24 +116,24 @@ DY_nlo_process_selection = Selection(name = "DrellYan_nlo",
 
 ##### TauTau #####
 
-TT_process_selection = Selection(
+def TT_process_selection(channel):
+    return Selection(
     name = "TT",
     weights = [
         ("generatorWeight", "generatorWeight"),
         ("numberGeneratedEventsWeight", "numberGeneratedEventsWeight"),
         ("crossSectionPerEventWeight", "crossSectionPerEventWeight"),
-        # Weights for corrections
         ("puweight", "puweight"),
         ("idWeight_1*idWeight_2","idweight"),
         ("isoWeight_1*isoWeight_2","isoweight"),
         ("trackWeight_1*trackWeight_2","trackweight"),
         ("topPtReweightWeight", "topPtReweightWeight"),
-        self.get_triggerweight_for_channel(self.channel._name),
+        triggerweight(channel),
         ("eleTauFakeRateWeight*muTauFakeRateWeight", "leptonTauFakeRateWeight"),
-        self.get_tauByIsoIdWeight_for_channel(self.channel.name),
-        self.get_eleHLTZvtxWeight_for_channel(self.channel.name),
+        tau_by_iso_id_weight(channel),
+        ele_hlt_Z_vtx_weight(channel),
         ("prefiringweight", "prefireWeight"),
-        self.era.lumi_weight
+        #self.era.lumi_weight
         ]
 
 
