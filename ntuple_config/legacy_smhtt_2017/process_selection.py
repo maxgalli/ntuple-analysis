@@ -344,3 +344,19 @@ def VVT_process_selection(channel):
                      cuts = [(tt_cut, "vvt_cut")],
                      weights = VV_process_selection(channel).weights)
 
+
+##### VVJ #####
+
+def VVJ_process_selection(channel):
+    ct = ""
+    if "mt" in channel or "et" in channel:
+        ct = "(gen_match_2 == 6 && gen_match_2 == 6)"
+    elif "tt" in channel:
+        ct = "(gen_match_1 == 6 || gen_match_2 == 6)"
+    elif "em" in channel:
+        ct = "0.0 == 1.0"
+
+    return Selection(name = "VVT",
+                     cuts = [(ct, "vv_fakes")],
+                     weights = VV_process_selection(channel).weights)
+
