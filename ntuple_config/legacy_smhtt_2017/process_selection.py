@@ -355,8 +355,30 @@ def VVJ_process_selection(channel):
         ct = "(gen_match_1 == 6 || gen_match_2 == 6)"
     elif "em" in channel:
         ct = "0.0 == 1.0"
-
-    return Selection(name = "VVT",
+    return Selection(name = "VVJ",
                      cuts = [(ct, "vv_fakes")],
+                     weights = VV_process_selection(channel).weights)
+
+
+##### VVL #####
+
+def VVL_process_selection(channel):
+    if "mt" in self.channel.name:
+        emb_veto = "!(gen_match_1==4 && gen_match_2==5)"
+        ff_veto = "!(gen_match_2 == 6)"
+    elif "et" in self.channel.name:
+        emb_veto = "!(gen_match_1==3 && gen_match_2==5)"
+        ff_veto = "!(gen_match_2 == 6)"
+    elif "tt" in self.channel.name:
+        emb_veto = "!(gen_match_1==5 && gen_match_2==5)"
+        ff_veto = "!(gen_match_1 == 6 || gen_match_2 == 6)"
+    elif "em" in self.channel.name:
+        emb_veto = "!(gen_match_1==3 && gen_match_2==4)"
+        ff_veto = "(1.0)"
+    elif "mm" in self.channel.name:
+        emb_veto = "!(gen_match_1==4 && gen_match_2==4)"
+        ff_veto = "(1.0)"
+    return Selection(name = "VVL",
+                     cuts = [("{} && {}".format(emb_veto,ff_veto), "tt_emb_and_ff_veto")],
                      weights = VV_process_selection(channel).weights)
 
