@@ -161,6 +161,28 @@ def VV_process_selection(channel):
     )
 
 
+##### W #####
+
+def W_process_selection(channel):
+    return Selection(
+    name = "W",
+    weights = [
+        ("generatorWeight", "generatorWeight"),
+        ("((0.0010062794683*((npartons <= 0 || npartons >= 5)*1.0 + (npartons == 1)*0.1448 + (npartons == 2)*0.0887 + (npartons == 3)*0.0540 + (npartons == 4)*0.0535)) * (genbosonmass>=0.0) + numberGeneratedEventsWeight * crossSectionPerEventWeight * (genbosonmass<0.0))", "wj_stitching_weight"),
+        ("puweight", "puweight"),
+        ("idWeight_1*idWeight_2","idweight"),
+        ("isoWeight_1*isoWeight_2","isoweight"),
+        ("trackWeight_1*trackWeight_2","trackweight"),
+        triggerweight(channel),
+        ("eleTauFakeRateWeight*muTauFakeRateWeight", "leptonTauFakeRateWeight"),
+        tau_by_iso_id_weight(channel),
+        ele_hlt_Z_vtx_weight(channel),
+        ("prefiringweight", "prefireWeight"),
+        #self.era.lumi_weight)
+        ]
+    )
+
+
 ##### ZTauTau #####
 
 def ZTT_process_selection(channel):
