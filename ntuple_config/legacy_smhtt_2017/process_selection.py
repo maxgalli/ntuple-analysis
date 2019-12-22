@@ -135,6 +135,30 @@ def TT_process_selection(channel):
         ("prefiringweight", "prefireWeight"),
         #self.era.lumi_weight
         ]
+    )
+
+
+##### VV #####
+
+def VV_process_selection(channel):
+    return Selection(
+    name = "VV",
+    weights = [
+        ("generatorWeight", "generatorWeight"),
+        ("numberGeneratedEventsWeight", "numberGeneratedEventsWeight"),
+        ("puweight", "puweight"),
+        ("idWeight_1*idWeight_2","idweight"),
+        ("isoWeight_1*isoWeight_2","isoweight"),
+        ("trackWeight_1*trackWeight_2","trackweight"),
+        triggerweight(channel),
+        ("eleTauFakeRateWeight*muTauFakeRateWeight", "leptonTauFakeRateWeight"),
+        tau_by_iso_id_weight(channel),
+        ele_hlt_Z_vtx_weight(channel),
+        ("crossSectionPerEventWeight", "crossSectionPerEventWeight"),
+        ("prefiringweight", "prefireWeight"),
+        #self.era.lumi_weight
+        ]
+    )
 
 
 ##### ZTauTau #####
