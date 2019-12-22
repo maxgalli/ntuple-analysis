@@ -326,3 +326,21 @@ def TTJ_process_selection(channel):
                      cuts = [(ct, "tt_fakes")],
                      weights = TT_process_selection(channel).weights)
 
+
+##### VVT #####
+
+def VVT_process_selection(channel):
+    if "mt" in channel:
+        tt_cut = "gen_match_1==4 && gen_match_2==5"
+    elif "et" in channel:
+        tt_cut = "gen_match_1==3 && gen_match_2==5"
+    elif "tt" in channel:
+        tt_cut = "gen_match_1==5 && gen_match_2==5"
+    elif "em" in channel:
+        tt_cut = "gen_match_1==3 && gen_match_2==4"
+    elif "mm" in channel:
+        tt_cut = "gen_match_1==4 && gen_match_2==4"
+    return Selection(name = "VVT",
+                     cuts = [(tt_cut, "vvt_cut")],
+                     weights = VV_process_selection(channel).weights)
+
