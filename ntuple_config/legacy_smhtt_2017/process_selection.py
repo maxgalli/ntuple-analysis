@@ -140,18 +140,28 @@ def TT_process_selection(channel):
 ##### ZTauTau #####
 
 def ZTT_process_selection(channel):
-    if "mt" in channel:
-        tt_cut = "gen_match_1==4 && gen_match_2==5"
-    elif "et" in channel:
-        tt_cut = "gen_match_1==3 && gen_match_2==5"
-    elif "tt" in channel:
-        tt_cut = "gen_match_1==5 && gen_match_2==5"
-    elif "em" in channel:
-        tt_cut = "gen_match_1==3 && gen_match_2==4"
-    elif "mm" in channel:
-        tt_cut = "gen_match_1==4 && gen_match_2==4"
+    tt_cut = __get_ZTT_cut(channel)
     return Selection(name = "ZTT",
-                     cuts = [(tt_cut, "ztt_cut")])
+                     cuts = [(tt_cut, "ztt_cut")],
+                     weights = DY_process_selection.weights)
+
+def ZTT_nlo_process_selection(channel):
+    tt_cut = __get_ZTT_cut(channel)
+    return Selection(name = "ZTT_nlo",
+                     cuts = [(tt_cut, "ztt_cut")],
+                     weights = DY_nlo_process_selection.weights)
+
+def __get_ZTT_cut(channel):
+    if "mt" in channel:
+        return "gen_match_1==4 && gen_match_2==5"
+    elif "et" in channel:
+        return "gen_match_1==3 && gen_match_2==5"
+    elif "tt" in channel:
+        return "gen_match_1==5 && gen_match_2==5"
+    elif "em" in channel:
+        return "gen_match_1==3 && gen_match_2==4"
+    elif "mm" in channel:
+        return "gen_match_1==4 && gen_match_2==4"
 
 
 ##### ZTauTau Embedded #####
@@ -207,6 +217,18 @@ def ZTT_embedded_process_selection(channel):
 ##### ZL #####
 
 def ZL_process_selection(channel):
+    veto = __get_ZL_cut(channel)
+    return Selection(name = "ZL",
+                     cuts = [("{} && {}".format(*veto), "dy_emb_and_ff_veto")],
+                     weights = DY_process_selection.weights)
+
+def ZL_nlo_process_selection(channel):
+    veto = __get_ZL_cut(channel)
+    return Selection(name = "ZL_nlo",
+                     cuts = [("{} && {}".format(*veto), "dy_emb_and_ff_veto")],
+                     weights = DY_nlo_process_selection.weights)
+
+def __get_ZL_cut(channel):
     if "mt" in channel:
         emb_veto = "!(gen_match_1==4 && gen_match_2==5)"
         ff_veto = "!(gen_match_2 == 6)"
@@ -222,8 +244,7 @@ def ZL_process_selection(channel):
     elif "mm" in channel:
         emb_veto = "!(gen_match_1==4 && gen_match_2==4)"
         ff_veto = "(1.0)"
-    return Selection(name = "ZL",
-                     cuts = [("%s && %s"%(emb_veto,ff_veto), "dy_emb_and_ff_veto")])
+    return (emb_veto, ff_veto)
 
 
 ##### TTT #####
@@ -240,7 +261,8 @@ def TTT_process_selection(channel):
     elif "mm" in channel:
         tt_cut = "gen_match_1==4 && gen_match_2==4"
     return Selection(name = "TTT",
-                     cuts = [(tt_cut, "ttt_cut")])
+                     cuts = [(tt_cut, "ttt_cut")],
+                     weights = TT_process_selection(channel).weights)
 
 
 ##### TTL #####
@@ -262,5 +284,6 @@ def TTL_process_selection(channel):
         emb_veto = "!(gen_match_1==4 && gen_match_2==4)"
         ff_veto = "(1.0)"
     return Selection(name = "TTL",
-                     cuts = [("%s && %s"%(emb_veto,ff_veto), "tt_emb_and_ff_veto")])
+                     cuts = [("%s && %s"%(emb_veto,ff_veto), "tt_emb_and_ff_veto")],
+                     weights = TT_process_selection(channel).weights)
 
