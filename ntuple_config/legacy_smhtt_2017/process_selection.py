@@ -1,6 +1,69 @@
 from ntuple_processor.utils import Selection
 
 
+##### Miscellaneous #####
+
+def triggerweight(channel):
+    weight = ("1.0", "triggerweight")
+
+    singleMC = "singleTriggerMCEfficiencyWeightKIT_1"
+    crossMCL = "crossTriggerMCEfficiencyWeight_1"
+    MCTau_1 = "((byTightIsolationMVArun2017v2DBoldDMwLT2017_1<0.5 && byVLooseIsolationMVArun2017v2DBoldDMwLT2017_1>0.5)*crossTriggerMCEfficiencyWeight_vloose_MVAv2_1 + (byTightIsolationMVArun2017v2DBoldDMwLT2017_1>0.5)*crossTriggerMCEfficiencyWeight_tight_MVAv2_1)"
+    MCTau_2 = MCTau_1.replace("_1","_2")
+
+    if "mt" in channel:
+        trig_sL = "(trg_singlemuon_27 || trg_singlemuon_24)"
+        trig_X = "(pt_1 > 21 && pt_1 < 25 && trg_crossmuon_mu20tau27)"
+
+        MuTauMC = "*".join([trig_sL, singleMC]) + "+" + "*".join([trig_X, crossMCL, MCTau_2])
+        MuTauData = MuTauMC.replace("MC","Data")
+        MuTau = "("+MuTauData+")/("+MuTauMC+")"
+        weight = (MuTau,"triggerweight")
+
+    elif "et" in channel:
+        trig_sL = "(trg_singleelectron_35 || trg_singleelectron_32 || trg_singleelectron_27)"
+        trig_X = "(pt_1>25 && pt_1<28 && trg_crossele_ele24tau30)"
+
+        ElTauMC = "*".join([trig_sL, singleMC]) + "+" + "*".join([trig_X, crossMCL, MCTau_2])
+        ElTauData = ElTauMC.replace("MC","Data")
+        ElTau = "("+ElTauData+")/("+ElTauMC+")"
+        weight = (ElTau,"triggerweight")
+
+    elif "tt" in channel:
+        DiTauMC = "*".join([MCTau_1,MCTau_2])
+        DiTauData = DiTauMC.replace("MC","Data")
+        DiTau = "("+DiTauData+")/("+DiTauMC+")"
+        weight = (DiTau,"triggerweight")
+
+    elif "em" in channel:
+        weight = (
+            "(trigger_23_data_Weight_2*trigger_12_data_Weight_1*(trg_muonelectron_mu23ele12==1)+trigger_23_data_Weight_1*trigger_8_data_Weight_2*(trg_muonelectron_mu8ele23==1) - trigger_23_data_Weight_2*trigger_23_data_Weight_1*(trg_muonelectron_mu8ele23==1 && trg_muonelectron_mu23ele12==1))/(trigger_23_mc_Weight_2*trigger_12_mc_Weight_1*(trg_muonelectron_mu23ele12==1)+trigger_23_mc_Weight_1*trigger_8_mc_Weight_2*(trg_muonelectron_mu8ele23==1) - trigger_23_mc_Weight_2*trigger_23_mc_Weight_1*(trg_muonelectron_mu8ele23==1 && trg_muonelectron_mu23ele12==1))",
+            "trigger_lepton_sf")
+
+    elif "mm" in channel:
+        weight = (
+            "singleTriggerDataEfficiencyWeightKIT_1/singleTriggerMCEfficiencyWeightKIT_1",
+            "trigger_lepton_sf")
+
+    return weight
+
+
+def singlelepton_triggerweight(channel):
+    weight = ("1.0","triggerweight")
+
+    MCTau_1 = "((byTightIsolationMVArun2017v2DBoldDMwLT2017_1<0.5 && byMediumIsolationMVArun2017v2DBoldDMwLT2017_1>0.5)*crossTriggerMCEfficiencyWeight_medium_MVAv2_1 + (byTightIsolationMVArun2017v2DBoldDMwLT2017_1>0.5)*crossTriggerMCEfficiencyWeight_tight_MVAv2_1)"
+    MCTau_2 = MCTau_1.replace("_1","_2")
+
+    if "mt" in channel or "et" in channel:
+        weight = ("singleTriggerDataEfficiencyWeightKIT_1/singleTriggerMCEfficiencyWeightKIT_1","triggerweight")
+    elif "tt" in channel:
+        DiTauMC = "*".join([MCTau_1,MCTau_2])
+        DiTauData = DiTauMC.replace("MC","Data")
+        DiTau = "("+DiTauData+")/("+DiTauMC+")"
+        weight = (DiTau,"triggerweight")
+
+    return weight
+
 ##### Drell-Yan #####
 
 DY_process_base_weights = [
@@ -32,6 +95,29 @@ DY_process_selection = Selection(name = "DrellYan",
                                  weights = DY_process_weights)
 DY_nlo_process_selection = Selection(name = "DrellYan_nlo",
                                      weights = DY_process_weights_nlo)
+
+
+##### TauTau #####
+
+TT_process_selection = Selection(
+    name = "TT",
+    weights = [
+        ("generatorWeight", "generatorWeight"),
+        ("numberGeneratedEventsWeight", "numberGeneratedEventsWeight"),
+        ("crossSectionPerEventWeight", "crossSectionPerEventWeight"),
+        # Weights for corrections
+        ("puweight", "puweight"),
+        ("idWeight_1*idWeight_2","idweight"),
+        ("isoWeight_1*isoWeight_2","isoweight"),
+        ("trackWeight_1*trackWeight_2","trackweight"),
+        ("topPtReweightWeight", "topPtReweightWeight"),
+        self.get_triggerweight_for_channel(self.channel._name),
+        ("eleTauFakeRateWeight*muTauFakeRateWeight", "leptonTauFakeRateWeight"),
+        self.get_tauByIsoIdWeight_for_channel(self.channel.name),
+        self.get_eleHLTZvtxWeight_for_channel(self.channel.name),
+        ("prefiringweight", "prefireWeight"),
+        self.era.lumi_weight
+        ]
 
 
 ##### ZTauTau #####
