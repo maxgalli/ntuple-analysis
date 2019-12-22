@@ -64,6 +64,23 @@ def singlelepton_triggerweight(channel):
 
     return weight
 
+
+def tau_by_iso_id_weight(channel):
+    weight = ("1.0","taubyIsoIdWeight")
+    if "mt" in channel or "et" in channel:
+        weight = ("((gen_match_2 == 5)*0.89 + (gen_match_2 != 5))", "taubyIsoIdWeight")
+    elif "tt" in channel:
+        weight = ("((gen_match_1 == 5)*0.89 + (gen_match_1 != 5))*((gen_match_2 == 5)*0.89 + (gen_match_2 != 5))", "taubyIsoIdWeight")
+    return weight
+
+
+def ele_hlt_vtx_weight(channel):
+    weight = ("1.0","eleHLTZvtxWeight")
+    if "et" in channel:
+        weight = ("(trg_singleelectron_35 || trg_singleelectron_32 || trg_singleelectron_27 || trg_crossele_ele24tau30)*0.991 + (!(trg_singleelectron_35 || trg_singleelectron_32 || trg_singleelectron_27 || trg_crossele_ele24tau30))*1.0", "eleHLTZvtxWeight")
+    return weight
+
+
 ##### Drell-Yan #####
 
 DY_process_base_weights = [
