@@ -121,3 +121,20 @@ def ZL_process_selection(channel):
         ff_veto = "(1.0)"
     return Selection(name = "ZL",
                      cuts = [("%s && %s"%(emb_veto,ff_veto), "dy_emb_and_ff_veto")])
+
+
+##### TTT #####
+
+def TTT_process_selection(channel):
+    if "mt" in channel:
+        tt_cut = "gen_match_1==4 && gen_match_2==5"
+    elif "et" in channel:
+        tt_cut = "gen_match_1==3 && gen_match_2==5"
+    elif "tt" in channel:
+        tt_cut = "gen_match_1==5 && gen_match_2==5"
+    elif "em" in channel:
+        tt_cut = "gen_match_1==3 && gen_match_2==4"
+    elif "mm" in channel:
+        tt_cut = "gen_match_1==4 && gen_match_2==4"
+    return Selection(name = "TTT",
+                     cuts = [(tt_cut, "ttt_cut")])
