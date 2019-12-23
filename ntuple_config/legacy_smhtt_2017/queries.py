@@ -1,4 +1,4 @@
-# DYJetsToLL
+##### DYJetsToLL #####
 
 queryM10 = {
     "process": "DYJetsToLL_M10to50",
@@ -62,7 +62,8 @@ DY_query_ntlo = [
     queryEWKZ
     ]
 
-#TT
+
+##### TT #####
 
 tt_query = {
     "process": "TTTo.*",
@@ -72,7 +73,8 @@ tt_query = {
     "campaign": "RunIIFall17MiniAODv2",
 }
 
-#W
+
+##### W #####
 
 W_query = [{
     "process": "W.?JetsToLNu|WGToLNuG",
