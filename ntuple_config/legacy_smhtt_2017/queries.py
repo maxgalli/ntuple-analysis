@@ -87,3 +87,14 @@ W_query = [{
     "campaign": "RunIIFall17MiniAODv2",
     "generator": "madgraph\-pythia8"
     }]
+
+
+##### HTT #####
+
+HTT_query = {
+    "process": "(VBF|GluGlu|Z|W).*HToTauTau_M125",
+    "data": False,
+    "campaign": "RunIIFall17MiniAODv2",
+    "generator": "powheg\-pythia8"
+}
+
