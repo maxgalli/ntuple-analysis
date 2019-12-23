@@ -98,3 +98,25 @@ HTT_query = {
     "generator": "powheg\-pythia8"
 }
 
+
+##### VV #####
+
+VV_query = [{
+    "process": "(WW|ZZ|WZ)$",
+    "data": False,
+    "generator": "^pythia8",
+    "campaign": "RunIIFall17MiniAODv2"
+    }, {
+    "process": "ST",
+    "data": False,
+    "scenario": "^PU2017$",
+    "version": "v2",
+    "generator": "powheg\-pythia8",
+    "campaign": "RunIIFall17MiniAODv2"
+    }, {
+    "process": "ST",
+    "data": False,
+    "scenario": "^PU2017newpmx$",
+    "generator": "powheg\-pythia8",
+    "campaign": "RunIIFall17MiniAODv2"
+    }]
