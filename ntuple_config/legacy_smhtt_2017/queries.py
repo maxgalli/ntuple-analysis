@@ -163,3 +163,13 @@ ggHWW_query = {
     "generator": "powheg\-pythia8"
 }
 
+
+##### qqHWW #####
+
+qqHWW_query = {
+    "process": "VBF.*HToWWTo2L2Nu_M125",
+    "data": False,
+    "campaign": "RunIIFall17MiniAODv2",
+    "generator": "powheg\-pythia8"
+}
+
