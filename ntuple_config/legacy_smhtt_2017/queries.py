@@ -213,3 +213,13 @@ ggH_query = {
     "generator": "powheg\-pythia8"
 }
 
+
+##### qqH #####
+
+qqH_query = {
+    "process": "(^VBFHToTauTau.*125.*|^W(minus|plus)HToTauTau.*125.*|^ZHToTauTau.*125.*)",
+    "data": False,
+    "campaign": "RunIIFall17MiniAODv2",
+    "generator": "powheg\-pythia8"
+}
+
