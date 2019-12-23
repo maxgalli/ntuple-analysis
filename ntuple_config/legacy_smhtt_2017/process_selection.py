@@ -427,3 +427,10 @@ def VVL_process_selection(channel):
                      cuts = [("{} && {}".format(emb_veto,ff_veto), "tt_emb_and_ff_veto")],
                      weights = VV_process_selection(channel).weights)
 
+
+##### VH #####
+
+def VH_process_selection(channel):
+    return Selection(name = "VH",
+                     cuts = [("(htxs_stage1p1cat>=300)&&(htxs_stage1p1cat<=505)", "htxs_match")],
+                     weights = HTT_process_selection(channel).weights)
