@@ -143,3 +143,12 @@ def ZTT_embedded_query(channel):
 
     return query
 
+
+##### HWW #####
+
+HWW_query = {
+    "process": "(VBF|GluGlu).*HToWWTo2L2Nu_M125",
+    "data": False,
+    "campaign": "RunIIFall17MiniAODv2",
+    "generator": "powheg\-pythia8"
+}
