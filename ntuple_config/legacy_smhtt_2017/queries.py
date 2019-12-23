@@ -193,3 +193,13 @@ WH_query = {
     "generator": "powheg\-pythia8"
 }
 
+
+##### ZH #####
+
+ZH_query = {
+    "process": "(^ZHToTauTau.*125.*)",
+    "data": False,
+    "campaign": "RunIIFall17MiniAODv2",
+    "generator": "powheg\-pythia8"
+}
+
