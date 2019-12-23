@@ -206,6 +206,29 @@ def HTT_process_selection(channel):
     )
 
 
+##### HWW #####
+
+def HWW_process_selection(channel):
+    return Selection(
+    name = "HWW",
+    weights = [
+        ("generatorWeight", "generatorWeight"),
+        ("numberGeneratedEventsWeight", "numberGeneratedEventsWeight"),
+        ("0.0857883*(abs(numberGeneratedEventsWeight - 2e-06) < 1e-07) + 1.1019558*(abs(numberGeneratedEventsWeight - 2e-06) >= 1e-07)", "crossSectionPerEventWeight"),
+        ("puweight", "puweight"),
+        ("idWeight_1*idWeight_2","idweight"),
+        ("isoWeight_1*isoWeight_2","isoweight"),
+        ("trackWeight_1*trackWeight_2","trackweight"),
+        triggerweight(channel),
+        ("eleTauFakeRateWeight*muTauFakeRateWeight", "leptonTauFakeRateWeight"),
+        tau_by_iso_id_weight(channel),
+        ele_hlt_Z_vtx_weight(channel),
+        ("prefiringweight", "prefireWeight"),
+        #self.era.lumi_weight
+        ]
+    )
+
+
 ##### ZTauTau #####
 
 def ZTT_process_selection(channel):
