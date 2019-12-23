@@ -152,3 +152,14 @@ HWW_query = {
     "campaign": "RunIIFall17MiniAODv2",
     "generator": "powheg\-pythia8"
 }
+
+
+##### ggHWW #####
+
+ggHWW_query = {
+    "process": "GluGlu.*HToWWTo2L2Nu_M125",
+    "data": False,
+    "campaign": "RunIIFall17MiniAODv2",
+    "generator": "powheg\-pythia8"
+}
+
