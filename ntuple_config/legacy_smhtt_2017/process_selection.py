@@ -93,7 +93,7 @@ DY_process_base_weights = [
     ("prefiringweight", "prefireWeight")
     ]
 DY_process_weights = DY_process_base_weights
-DY_process_weights_nlo = DY_process_base_weights
+DY_process_weights_nlo = DY_process_base_weights
 DY_process_weights.append((
         "((genbosonmass >= 50.0)*6.3654e-05*((npartons == 0 || npartons >= 5)*1.0 + (npartons == 1)*0.1743 \
                 + (npartons == 2)*0.3556 \
@@ -278,7 +278,7 @@ def ZTT_embedded_process_selection(channel):
             ("idWeight_1*((pt_1>28)*(trigger_27_32_35_Weight_1*(abs(eta_1) < 1.5) + singleTriggerDataEfficiencyWeightKIT_1*(abs(eta_1)>=1.5))+(pt_1<28))*isoWeight_1", "lepton_sf"),
             ("(gen_match_2==5)*0.97+(gen_match_2!=5)", "emb_tau_id"),
             ("gen_match_1==3 && gen_match_2==5","emb_veto"),
-            ("embeddedDecayModeWeight", "decayMode_SF"))
+            ("embeddedDecayModeWeight", "decayMode_SF")
             ]
     elif "tt" in channel:
         ztt_embedded_weights = [
@@ -288,7 +288,7 @@ def ZTT_embedded_process_selection(channel):
             ("(0.18321*(pt_2>=30 && pt_2<35) + 0.53906*(pt_2>=35 && pt_2<40) + 0.63658*(pt_2>=40 && pt_2<45) + 0.73152*(pt_2>=45 && pt_2<50) + 0.79002*(pt_2>=50 && pt_2<60) + 0.84666*(pt_2>=60 && pt_2<80) + 0.84919*(pt_2>=80 && pt_2<100) + 0.86819*(pt_2>=100 && pt_2<150) + 0.88206*(pt_2>=150 && pt_2<200) + (pt_2>=200))","tau2_leg_weight"),
             ("((gen_match_1==5)*0.97+(gen_match_1!=5))*((gen_match_2==5)*0.97+(gen_match_2!=5))", "emb_tau_id"),
             ("gen_match_1==5 && gen_match_2==5","emb_veto"),
-            ("embeddedDecayModeWeight", "decayMode_SF"))
+            ("embeddedDecayModeWeight", "decayMode_SF")
             ]
     elif "em" in channel:
         ztt_embedded_weights = [
@@ -296,7 +296,7 @@ def ZTT_embedded_process_selection(channel):
             ("(gen_match_1==3 && gen_match_2==4)", "emb_gen_match"),
             ("muonEffTrgWeight*muonEffIDWeight_1*muonEffIDWeight_2", "scale_factor"),
             ("0.99*trackWeight_1*trackWeight_2*idWeight_1*isoWeight_1*idWeight_2*looseIsoWeight_2", "idiso_lepton_sf"),
-            ("(trigger_23_data_Weight_2*trigger_12_data_Weight_1*(trg_muonelectron_mu23ele12==1)+trigger_23_data_Weight_1*trigger_8_data_Weight_2*(trg_muonelectron_mu8ele23==1) - trigger_23_data_Weight_2*trigger_23_data_Weight_1*(trg_muonelectron_mu8ele23==1 && trg_muonelectron_mu23ele12==1))/(trigger_23_embed_Weight_2*trigger_12_embed_Weight_1*(trg_muonelectron_mu23ele12==1)+trigger_23_embed_Weight_1*trigger_8_embed_Weight_2*(trg_muonelectron_mu8ele23==1) - trigger_23_embed_Weight_2*trigger_23_embed_Weight_1*(trg_muonelectron_mu8ele23==1 && trg_muonelectron_mu23ele12==1))", "trigger_lepton_sf"))
+            ("(trigger_23_data_Weight_2*trigger_12_data_Weight_1*(trg_muonelectron_mu23ele12==1)+trigger_23_data_Weight_1*trigger_8_data_Weight_2*(trg_muonelectron_mu8ele23==1) - trigger_23_data_Weight_2*trigger_23_data_Weight_1*(trg_muonelectron_mu8ele23==1 && trg_muonelectron_mu23ele12==1))/(trigger_23_embed_Weight_2*trigger_12_embed_Weight_1*(trg_muonelectron_mu23ele12==1)+trigger_23_embed_Weight_1*trigger_8_embed_Weight_2*(trg_muonelectron_mu8ele23==1) - trigger_23_embed_Weight_2*trigger_23_embed_Weight_1*(trg_muonelectron_mu8ele23==1 && trg_muonelectron_mu23ele12==1))", "trigger_lepton_sf")
             ]
 
     ztt_embedded_cuts = [("((gen_match_1>2 && gen_match_1<6) && (gen_match_2>2 && gen_match_2<6))", "dy_genuine_tau")]
