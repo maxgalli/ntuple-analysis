@@ -203,3 +203,13 @@ ZH_query = {
     "generator": "powheg\-pythia8"
 }
 
+
+##### ggH #####
+
+ggH_query = {
+    "process": "^GluGluHToTauTau.*125.*",
+    "data": False,
+    "campaign": "RunIIFall17MiniAODv2",
+    "generator": "powheg\-pythia8"
+}
+
