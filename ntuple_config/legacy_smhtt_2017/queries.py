@@ -120,3 +120,26 @@ VV_query = [{
     "generator": "powheg\-pythia8",
     "campaign": "RunIIFall17MiniAODv2"
     }]
+
+
+##### ZTTEmbedded #####
+
+def ZTT_embedded_query(channel):
+    query = {
+        "process": "Embedding2017(B|C|D|E|F)",
+        "embedded": True
+        }
+    if "mt" in channel:
+        query["campaign"] = "MuTauFinalState"
+        query["scenario"] = ".*v2"
+    elif "et" in channel:
+        query["campaign"] = "ElTauFinalState"
+        query["scenario"] = ".*v2"
+    elif "tt" in channel:
+        query["campaign"] = "TauTauFinalState"
+        query["scenario"] = ".*(v2|v3)"
+    elif "em" in channel:
+        query["campaign"] = "ElMuFinalState"
+
+    return query
+
