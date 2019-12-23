@@ -183,3 +183,13 @@ VH_query = {
     "generator": "powheg\-pythia8"
 }
 
+
+##### WH #####
+
+WH_query = {
+    "process": "(^W(minus|plus)HToTauTau.*125.*)",
+    "data": False,
+    "campaign": "RunIIFall17MiniAODv2",
+    "generator": "powheg\-pythia8"
+}
+
