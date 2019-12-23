@@ -450,3 +450,10 @@ def ZH_process_selection(channel):
     return Selection(name = "ZH",
                      cuts = [("(htxs_stage1p1cat>=400)&&(htxs_stage1p1cat<=405)", "htxs_match")],
                      weights = HTT_process_selection(channel).weights)
+
+
+##### ttH #####
+
+def ttH_process_selection(channel):
+    return Selection(name = "ttH",
+                     weights = HTT_process_selection(channel).weights)
