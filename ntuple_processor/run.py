@@ -89,9 +89,10 @@ class RunManager:
 
     def __filter_from_selection(self, rdf, selection):
         l_rdf = rdf
-        for cut in selection.cuts:
-            rdf = l_rdf.Filter(cut[0])
-            l_rdf = rdf
+        if selection.cuts:
+            for cut in selection.cuts:
+                rdf = l_rdf.Filter(cut[0])
+                l_rdf = rdf
         return l_rdf
 
     def __sum_from_count(self, rdf, book_count):
