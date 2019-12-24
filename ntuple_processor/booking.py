@@ -27,7 +27,7 @@ class DatasetFromDatabase:
         inner_dataset_from_database
     """
     def __init__(self):
-        self.dataset = None
+        self.path_to_database = None
 
     def __call__(
             self,
@@ -35,13 +35,14 @@ class DatasetFromDatabase:
             queries, folder,
             files_base_directories,
             friends_base_directories):
-        if self.dataset is None:
-            self.dataset = self.inner_dataset_from_database(
-                dataset_name, path_to_database,
-                queries, folder,
-                files_base_directories,
-                friends_base_directories)
-        return self.dataset
+        if self.path_to_database is None:
+            self.path_to_database = path_to_database
+        dataset = self.inner_dataset_from_database(
+            dataset_name, self.path_to_database,
+            queries, folder,
+            files_base_directories,
+            friends_base_directories)
+        return dataset
 
     def inner_dataset_from_database(
             self,
