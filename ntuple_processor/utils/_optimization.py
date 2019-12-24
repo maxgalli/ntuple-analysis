@@ -19,8 +19,7 @@ class Node:
         return layout
 
     def __eq__(self, other):
-        logger.debug('__eq__ compares: {} with {},\
-            {} with {} and {} with {}.'.format(
+        logger.debug('__eq__ compares: names ({} with {}), kinds ({} and {}) and AFU blocks ({} and {})'.format(
                 self.name, other.name,
                 self.kind, other.kind,
                 self.afu_block, other.afu_block))

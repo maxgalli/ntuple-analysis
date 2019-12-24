@@ -45,7 +45,7 @@ class RunManager:
         root_file.Close()
 
     def __node_to_root(self, node, rdf = None):
-        logger.debug('Graph to ROOT convertion:\nNode:\n{}'.format(
+        logger.debug('%%%%%%%%%% Converting from Graph to ROOT language:\nNode:\n{}'.format(
             node))
         if node.kind == 'dataset':
             result = self.__rdf_from_dataset(
@@ -62,11 +62,10 @@ class RunManager:
                     rdf, node.afu_block)
         if node.children:
             for child in node.children:
-                logger.debug('Do not return, apply actions in:\n\
-                        {}\n on RDF:\n{}'.format(child, result))
+                logger.debug('%%%%% Do not return, apply actions in:\n{}\n on RDF:\n{}'.format(child, result))
                 self.__node_to_root(child, result)
         else:
-            logger.debug('Final return: append \n{} to final pointers'.format(
+            logger.debug('%%%%% Final return: append \n{} to final pointers'.format(
                 result))
             self.final_ptrs.append(result)
 
@@ -77,8 +76,7 @@ class RunManager:
             tree_name = t_names.pop()
         else:
             raise NameError(
-                'Impossible to create RDataFrame with \
-                 different tree names')
+                'Impossible to create RDataFrame with different tree names')
         files = []
         for ntuple in dataset.ntuples:
             files.append(ntuple.path)

@@ -78,15 +78,10 @@ class GraphManager:
         self.graphs.append(Graph(afu))
 
     def optimize(self):
-        # at the moment dataset nodes and selection nodes have unambiguous names,
-        # but histo and sum operations don't. this is fine in __node_from_afu since
-        # there is only one operation at the end, but in the optimization process
-        # we need to add another part to the name since in a graph we can have more
-        # than one histo or sum and we need to distnguish
         self.merge_datasets()
 
     def merge_datasets(self):
-        logger.debug('Merge datasets:')
+        logger.debug('%%%%%%%%%% Merging datasets:')
         merged_graphs = list()
         for graph in self.graphs:
             if graph not in merged_graphs:
@@ -97,6 +92,7 @@ class GraphManager:
                         for child in graph.children:
                             merged_graph.children.append(child)
         # Debug
+        logger.debug('%%%%%%%%%% Merging datasets: DONE')
         logger.debug('Merged graphs:')
         for graph in merged_graphs:
             logger.debug(graph)
