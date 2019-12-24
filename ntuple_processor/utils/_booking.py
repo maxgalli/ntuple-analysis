@@ -51,10 +51,10 @@ class Selection:
                 self.__check_format(cuts)
                 self.cuts = cuts
             except TypeError as err:
-                print(err, 'Cuts assigned to None')
-                self.cuts = None
+                print(err, 'Cuts assigned to empty list')
+                self.cuts = []
         else:
-            pass
+            self.cuts = []
 
     def set_weights(self, weights):
         if weights is not None:
@@ -62,10 +62,10 @@ class Selection:
                 self.__check_format(weights)
                 self.weights = weights
             except TypeError as err:
-                print(err, 'Weights assigned to None')
-                self.weights = None
+                print(err, 'Weights assigned to empty list')
+                self.weights = []
         else:
-            pass
+            self.weights = []
 
     def __check_format(self, list_of_dtuples):
         if isinstance(list_of_dtuples, list):
