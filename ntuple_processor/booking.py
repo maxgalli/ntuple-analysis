@@ -148,7 +148,7 @@ class DatasetFromDatabase:
         # E.g.: file_base_dir/file_name.root
         root_files = get_complete_filenames(
             files_base_directories, names)
-        logger.debug('.root files for dataset {}'.format(
+        logger.debug('Dataset {} contains trees from the following .root files:\n\t{}'.format(
             dataset_name, root_files))
         ntuples = []
 
@@ -158,8 +158,8 @@ class DatasetFromDatabase:
             tdf_tree = get_full_tree_name(
                 folder, root_file, 'ntuple')
             if tdf_tree:
-                logger.debug('Complete tree folder: {}'.format(
-                    tdf_tree))
+                logger.debug('Get tree {} from file {}'.format(
+                    tdf_tree, root_file))
                 friends = []
                 friend_paths = []
                 for friends_base_directory in friends_base_directories:
@@ -170,12 +170,13 @@ class DatasetFromDatabase:
                 ntuples.append(Ntuple(root_file, tdf_tree, friends))
         dataset = Dataset(dataset_name, ntuples)
         # Debug
-        for ntuple in ntuples:
-            logger.debug('Ntuple, path: {} and folder: {}'.format(
-                ntuple.path, ntuple.directory))
-            for friend in ntuple.friends:
-                logger.debug('  Friends: path: {}, folder: {}'.format(
-                    friend.path, friend.directory))
+        logger.debug('Loop over the ntuples')
+        for n, ntuple in enumerate(ntuples):
+            logger.debug('Ntuple {}:\n\tPath: {}\n\tFolder: {}'.format(
+                n, ntuple.path, ntuple.directory))
+            for m, friend in enumerate(ntuple.friends):
+                logger.debug('\n\tFriend {} of ntuple {}:\n\tPath: {}\n\tFolder: {}'.format(
+                    m, n, friend.path, friend.directory))
         return dataset
 
 dataset_from_database = DatasetFromDatabase()

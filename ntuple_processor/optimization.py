@@ -31,10 +31,10 @@ class Graph(Node):
             # Debug
             def print_info(graph):
                 for child in graph.children:
-                    print('Node: \n{} \nChild: \n{}\n'.format(
+                    print('Node: \n{}\n\nChild: \n{}\n'.format(
                         graph, child))
                     print_info(child)
-            logger.debug('\nConstruct graph from AFU:\n')
+            logger.debug('Construct graph from AFU:\n')
             logger.debug(print_info(self))
 
     def __nodes_from_afu(self, afu):
