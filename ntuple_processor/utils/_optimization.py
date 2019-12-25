@@ -11,11 +11,16 @@ class Node:
             child for child in children]
 
     def __str__(self):
+        bar = 64 * '/'
+        qbar = 16 * '/'
+        hbar = 32 * '/'
         layout = '\n'.join([
+            '\n' + qbar + 'Node object' + hbar + 5 * '/',
             'Name: {}'.format(self.name),
             'Kind: {}'.format(self.kind),
             'AnalysisFlowUnit: {}'.format(self.afu_block),
-            'Children: {}'.format(self.children)])
+            'Children: {}'.format(self.children),
+            bar ])
         return layout
 
     def __eq__(self, other):
