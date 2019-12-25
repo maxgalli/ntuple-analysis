@@ -67,13 +67,19 @@ class RunManager:
         else:
             logger.debug('%%%%% Final return: append \n{} to final pointers'.format(
                 result))
-            self.final_ptrs.append(result)
+            if isinstance(result, list):
+                for histo in result:
+                    self.final_ptrs.append(histo)
+            else:
+                self.final_ptrs.append(result)
 
     def __rdf_from_dataset(self, dataset):
         t_names = [ntuple.directory for ntuple in \
             dataset.ntuples]
         if len(set(t_names)) == 1:
             tree_name = t_names.pop()
+            logger.debug('%%%%%%%%%% RDataframe from dataset: using tree "{}"'.format(
+                tree_name))
         else:
             raise NameError(
                 'Impossible to create RDataFrame with different tree names')
@@ -110,16 +116,48 @@ class RunManager:
         return rdf
 
     def __histo1d_from_histo(self, rdf, book_histo):
+        # Debug
+        def print_info(rdf):
+            names = rdf.GetColumnNames()
+            print('%%%%%%%%%% Booking histogram - RDF columns:')
+            for name in names:
+                print(name)
+        logger.debug(print_info(rdf))
+        logger.debug('%%%%% Columns scan DONE')
+
+        var = book_histo.variable
+        rdf_min = rdf.Min(var).GetValue()
+        logger.debug('Minimum for variable {}: {}'.format(
+            var, rdf_min))
+        rdf_max = rdf.Max(var).GetValue()
+        logger.debug('Maximum for variable {}: {}'.format(
+            var, rdf_max))
+        nbins_histos = list()
+
         weight_expression = '*'.join([
             name for name in rdf.GetColumnNames() if name.startswith(
                 '__weight__')])
         logger.debug('%%%%%%%%%% Histo1D from histo: created weight expression {}'.format(
             weight_expression))
-        if not weight_expression:
-            return rdf.Histo1D(book_histo.variable)
-        else:
-            weight_name = 'Weight'
-            logger.debug('%%%%%%%%%% Histo1D from histo: defining {} column with weight expression {}'.format(
-                weight_name, weight_expression))
-            l_rdf = rdf.Define(weight_name, weight_expression)
-            return l_rdf.Histo1D(book_histo.variable, weight_name)
+
+        for nbins in book_histo.binning:
+            name = '_'.join([var,
+                str(nbins)])
+            if not weight_expression:
+                nbins_histos.append(
+                    rdf.Histo1D((
+                        name, name, nbins,
+                        rdf_min, rdf_max),
+                        var))
+            else:
+                weight_name = 'Weight'
+                logger.debug('%%%%%%%%%% Histo1D from histo: defining {} column with weight expression {}'.format(
+                    weight_name, weight_expression))
+                l_rdf = rdf.Define(weight_name, weight_expression)
+                nbins_histos.append(
+                    l_rdf.Histo1D((
+                        name, name, nbins,
+                        rdf_min, rdf_max),
+                        var, weight_expression))
+
+        return nbins_histos
