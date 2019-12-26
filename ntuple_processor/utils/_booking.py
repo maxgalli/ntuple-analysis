@@ -82,20 +82,20 @@ class Selection:
 
 
 class Action:
-    def __init__(self, name):
+    def __init__(self,
+            name, variable):
         self.name = name
+        self.variable = variable
 
 
 class BookCount(Action):
-    def __init__(self):
-        self.name = 'BookCount'
+    def __init__(self, variable):
+        Action.__init__(self, 'BookCount', variable)
 
 
 class BookHisto(Action):
     def __init__(
             self,
-            binning, variable):
-        self.name = 'BookHisto'
+            variable, binning):
+        Action.__init__(self, 'BookHisto', variable)
         self.binning = binning
-        self.variable = variable
-

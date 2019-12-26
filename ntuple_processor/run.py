@@ -116,7 +116,7 @@ class RunManager:
         return l_rdf
 
     def __sum_from_count(self, rdf, book_count):
-        return rdf
+        return rdf.Sum(book_count.variable)
 
     def __histo1d_from_histo(self, rdf, book_histo, dataset_name):
         # Debug
