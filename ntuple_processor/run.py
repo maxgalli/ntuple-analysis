@@ -51,7 +51,7 @@ class RunManager:
             result = self.__rdf_from_dataset(
                 node.afu_block)
         elif node.kind == 'selection':
-            result = self.__filter_from_selection(
+            result = self.__cuts_and_weights_from_selection(
                 rdf, node.afu_block)
         elif node.kind == 'action':
             if 'Count' in node.name:
@@ -85,16 +85,41 @@ class RunManager:
         rdf = RDataFrame(tree_name, files)
         return rdf
 
-    def __filter_from_selection(self, rdf, selection):
+    def __cuts_and_weights_from_selection(self, rdf, selection):
         l_rdf = rdf
         if selection.cuts:
             for cut in selection.cuts:
+                logger.debug('%%%%% Creating Filter from cut {}'.format(
+                    cut))
                 rdf = l_rdf.Filter(cut[0])
                 l_rdf = rdf
+        if selection.weights:
+            weight_name = '__weight__' + selection.name
+            weight_expression = '*'.join([
+                weight[0] for weight in selection.weights])
+            rdf = l_rdf.Define(
+                weight_name,
+                weight_expression)
+            logger.debug('%%%%% Defining {} column with weight expression {}'.format(
+                weight_name,
+                weight_expression))
+            l_rdf = rdf
         return l_rdf
 
     def __sum_from_count(self, rdf, book_count):
         return rdf
 
     def __histo1d_from_histo(self, rdf, book_histo):
-        return rdf.Histo1D(book_histo.variable)
+        weight_expression = '*'.join([
+            name for name in rdf.GetColumnNames() if name.startswith(
+                '__weight__')])
+        logger.debug('%%%%%%%%%% Histo1D from histo: created weight expression {}'.format(
+            weight_expression))
+        if not weight_expression:
+            return rdf.Histo1D(book_histo.variable)
+        else:
+            weight_name = 'Weight'
+            logger.debug('%%%%%%%%%% Histo1D from histo: defining {} column with weight expression {}'.format(
+                weight_name, weight_expression))
+            l_rdf = rdf.Define(weight_name, weight_expression)
+            return l_rdf.Histo1D(book_histo.variable, weight_name)
