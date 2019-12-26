@@ -126,10 +126,10 @@ class RunManager:
         logger.debug('%%%%% Columns scan DONE')
 
         var = book_histo.variable
-        rdf_min = rdf.Min(var).GetValue()
+        rdf_min = rdf.Min['double'](var).GetValue()
         logger.debug('Minimum for variable {}: {}'.format(
             var, rdf_min))
-        rdf_max = rdf.Max(var).GetValue()
+        rdf_max = rdf.Max['double'](var).GetValue()
         logger.debug('Maximum for variable {}: {}'.format(
             var, rdf_max))
         nbins_histos = list()
