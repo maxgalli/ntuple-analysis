@@ -28,6 +28,9 @@ class RunManager:
     def __init__(self, graphs):
         self.final_ptrs = []
         for graph in graphs:
+            self._last_used_dataset = graph.name
+            logger.debug('Last used dataset called {}'.format(
+                self._last_used_dataset))
             self.__node_to_root(graph)
         logger.debug('Final pointers: {}'.format(
             self.final_ptrs))
@@ -59,7 +62,7 @@ class RunManager:
                     rdf, node.afu_block)
             elif 'Histo' in node.name:
                 result = self.__histo1d_from_histo(
-                    rdf, node.afu_block)
+                    rdf, node.afu_block, self._last_used_dataset)
         if node.children:
             for child in node.children:
                 logger.debug('%%%%% Do not return, apply actions in:\n{}\n on RDF:\n{}'.format(child, result))
@@ -115,7 +118,7 @@ class RunManager:
     def __sum_from_count(self, rdf, book_count):
         return rdf
 
-    def __histo1d_from_histo(self, rdf, book_histo):
+    def __histo1d_from_histo(self, rdf, book_histo, dataset_name):
         # Debug
         def print_info(rdf):
             names = rdf.GetColumnNames()
@@ -142,7 +145,7 @@ class RunManager:
 
         for nbins in book_histo.binning:
             name = '_'.join([var,
-                str(nbins)])
+                str(nbins), dataset_name])
             if not weight_expression:
                 nbins_histos.append(
                     rdf.Histo1D((
