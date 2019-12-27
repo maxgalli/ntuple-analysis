@@ -1,5 +1,3 @@
-from ._generic_helpers import _print_names_right_aligned
-
 import logging
 logger = logging.getLogger(__name__)
 
@@ -41,11 +39,7 @@ class Dataset:
         self.ntuples = ntuples
 
     def __str__(self):
-        join_list = [f'{self.name}:']
-        join_list.append(
-            _print_names_right_aligned(self.name, self.ntuples))
-        layout = '\n'.join(join_list)
-        return layout
+        return 'Dataset-{}'.format(self.name)
 
     def add_to_ntuples(*new_ntuples):
         for new_ntuple in new_ntuples:
