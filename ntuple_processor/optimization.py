@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 class Graph(Node):
     """
-    A Graph is itself a node where every has other nodes as children.
+    A Graph is itself a node and every node has other nodes as children.
     Due to the way it is constructed, the root node will always be of
     kind 'dataset'.
 
@@ -28,14 +28,7 @@ class Graph(Node):
                     nodes[:-1], nodes[1:]):
                 no_last.children.append(no_first)
             self.children.append(nodes[0])
-            # Debug
-            def print_info(graph):
-                for child in graph.children:
-                    print('Node: \n{}\n\nChild: \n{}\n'.format(
-                        graph, child))
-                    print_info(child)
-            logger.debug('Construct graph from AFU:\n')
-            logger.debug(print_info(self))
+            logger.debug('%%%%%%%%%% Constructing graph from AFU')
 
     def __nodes_from_afu(self, afu):
         nodes = []
@@ -92,8 +85,11 @@ class GraphManager:
                         for child in graph.children:
                             merged_graph.children.append(child)
         # Debug
-        logger.debug('%%%%%%%%%% Merging datasets: DONE')
-        logger.debug('Merged graphs:')
-        for graph in merged_graphs:
-            logger.debug(graph)
+        def print_merged_graphs():
+            logger.debug('%%%%%%%%%% Merging datasets: DONE')
+            print('Merged graphs:')
+            for graph in merged_graphs:
+                print(graph)
+        print_merged_graphs()
+
         self.graphs = merged_graphs

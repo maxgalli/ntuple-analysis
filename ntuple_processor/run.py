@@ -28,11 +28,15 @@ class RunManager:
     def __init__(self, graphs):
         self.final_ptrs = []
         for graph in graphs:
+            # This gets the name of the graph being used
+            # (which is also the name of the dataset
+            # related to this graph), to put it in the
+            # histogram name.
             self._last_used_dataset = graph.name
-            logger.debug('Last used dataset called {}'.format(
-                self._last_used_dataset))
+            #logger.debug('Last used dataset called {}'.format(
+                #self._last_used_dataset))
             self.__node_to_root(graph)
-        logger.debug('Final pointers: {}'.format(
+        logger.debug('%%%%%%%%%% Final pointers (histos and cunts): {}'.format(
             self.final_ptrs))
 
     def run_locally(self, of_name):
@@ -48,7 +52,7 @@ class RunManager:
         root_file.Close()
 
     def __node_to_root(self, node, rdf = None):
-        logger.debug('%%%%%%%%%% Converting from Graph to ROOT language:\nNode:\n{}'.format(
+        logger.debug('%%%%%%%%%% __node_to_root, converting from Graph to ROOT language the following node\n{}'.format(
             node))
         if node.kind == 'dataset':
             result = self.__rdf_from_dataset(
@@ -65,10 +69,11 @@ class RunManager:
                     rdf, node.afu_block, self._last_used_dataset)
         if node.children:
             for child in node.children:
-                logger.debug('%%%%% Do not return, apply actions in:\n{}\n on RDF:\n{}'.format(child, result))
+                logger.debug('%%%%% __node_to_root, do not return; apply actions in "{}" on RDF "{}"'.format(
+                    child.__repr__(), result))
                 self.__node_to_root(child, result)
         else:
-            logger.debug('%%%%% Final return: append \n{} to final pointers'.format(
+            logger.debug('%%%%% __node_to_root, final return: append \n{} to final pointers'.format(
                 result))
             if isinstance(result, list):
                 for histo in result:
@@ -81,8 +86,6 @@ class RunManager:
             dataset.ntuples]
         if len(set(t_names)) == 1:
             tree_name = t_names.pop()
-            logger.debug('%%%%%%%%%% RDataframe from dataset: using tree "{}"'.format(
-                tree_name))
         else:
             raise NameError(
                 'Impossible to create RDataFrame with different tree names')
