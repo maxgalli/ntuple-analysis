@@ -1,3 +1,5 @@
+from ._generic_helpers import _print_names_right_aligned
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -8,6 +10,12 @@ class NtupleBase:
     def __init__(self, path, directory):
         self.path = path
         self.directory = directory
+
+    def __str__(self):
+        layout = '(' + self.path \
+                + ', ' + self.directory \
+                + ')'
+        return layout
 
 
 class Friend(NtupleBase):
@@ -31,6 +39,13 @@ class Dataset:
     def __init__(self, name, ntuples):
         self.name = name
         self.ntuples = ntuples
+
+    def __str__(self):
+        join_list = [f'{self.name}:']
+        join_list.append(
+            _print_names_right_aligned(self.name, self.ntuples))
+        layout = '\n'.join(join_list)
+        return layout
 
     def add_to_ntuples(*new_ntuples):
         for new_ntuple in new_ntuples:

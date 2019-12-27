@@ -16,10 +16,10 @@ class Node:
         hbar = 32 * '/'
         layout = '\n'.join([
             '\n' + qbar + 'Node object' + hbar + 5 * '/',
-            'Name: {}'.format(self.name),
-            'Kind: {}'.format(self.kind),
-            'AnalysisFlowUnit: {}'.format(self.afu_block),
-            'Children: {}'.format(self.children),
+            'Name:                  {}'.format(self.name),
+            'Kind:                  {}'.format(self.kind),
+            'AnalysisFlowUnitBlock: {}'.format(self.afu_block),
+            'Children:              {}'.format(self.children),
             bar ])
         return layout
 

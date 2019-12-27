@@ -125,8 +125,7 @@ class RunManager:
             print('%%%%%%%%%% Booking histogram - RDF columns:')
             for name in names:
                 print(name)
-        logger.debug(print_info(rdf))
-        logger.debug('%%%%% Columns scan DONE')
+        #logger.debug(print_info(rdf))
 
         var = book_histo.variable
         rdf_min = rdf.Min['double'](var).GetValue()
