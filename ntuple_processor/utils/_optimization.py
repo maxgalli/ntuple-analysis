@@ -23,6 +23,9 @@ class Node:
             bar ])
         return layout
 
+    def __repr__(self):
+        return self.name
+
     def __eq__(self, other):
         logger.debug('__eq__ compares: names ({} with {}), kinds ({} and {}) and AFU blocks ({} and {})'.format(
                 self.name, other.name,
