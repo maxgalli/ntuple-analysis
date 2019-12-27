@@ -55,7 +55,7 @@ class Selection:
         self.set_weights(weights)
 
     def __str__(self):
-        return self.name
+        return 'Selection-{}'.format(self.name)
 
     def set_cuts(self, cuts):
         if cuts is not None:
@@ -100,7 +100,7 @@ class Action:
         self.variable = variable
 
     def __str__(self):
-        return '{}__{}'.format(self.name, self.variable)
+        return '{}-{}'.format(self.name, self.variable)
 
 
 class BookCount(Action):
