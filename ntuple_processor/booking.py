@@ -149,7 +149,7 @@ class DatasetFromDatabase:
         # E.g.: file_base_dir/file_name.root
         root_files = get_complete_filenames(
             files_base_directories, names)
-        logger.debug('Dataset {} contains trees from the following .root files:\n\t{}'.format(
+        logger.debug('%%%%%%%%%% Creating dataset {}, get root files:\n\t{}'.format(
             dataset_name, root_files))
         ntuples = []
 
@@ -159,8 +159,8 @@ class DatasetFromDatabase:
             tdf_tree = get_full_tree_name(
                 folder, root_file, 'ntuple')
             if tdf_tree:
-                logger.debug('Get tree {} from file {}'.format(
-                    tdf_tree, root_file))
+                #logger.debug('Get tree {} from file {}'.format(
+                    #tdf_tree, root_file))
                 friends = []
                 friend_paths = []
                 for friends_base_directory in friends_base_directories:
@@ -170,14 +170,18 @@ class DatasetFromDatabase:
                     friends.append(Friend(friend_path, tdf_tree))
                 ntuples.append(Ntuple(root_file, tdf_tree, friends))
         dataset = Dataset(dataset_name, ntuples)
+
         # Debug
-        logger.debug('Loop over the ntuples')
-        for n, ntuple in enumerate(ntuples):
-            logger.debug('Ntuple {}:\n\tPath: {}\n\tFolder: {}'.format(
-                n, ntuple.path, ntuple.directory))
-            for m, friend in enumerate(ntuple.friends):
-                logger.debug('\n\tFriend {} of ntuple {}:\n\tPath: {}\n\tFolder: {}'.format(
-                    m, n, friend.path, friend.directory))
+        def debug_dataset():
+            logger.debug('%%%%%%%%%% Creating dataset {}, analyze ntuples'.format(dataset_name))
+            for n, ntuple in enumerate(ntuples):
+                logger.debug('Ntuple {}:\n\tPath: {}\n\tFolder: {}'.format(
+                    n, ntuple.path, ntuple.directory))
+                for m, friend in enumerate(ntuple.friends):
+                    logger.debug('\n\tFriend {} of ntuple {}:\n\tPath: {}\n\tFolder: {}'.format(
+                        m, n, friend.path, friend.directory))
+        #logger.debug(debug_dataset())
+
         return dataset
 
 dataset_from_database = DatasetFromDatabase()
