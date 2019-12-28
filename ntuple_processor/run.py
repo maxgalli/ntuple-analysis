@@ -100,6 +100,11 @@ class RunManager:
     def __cuts_and_weights_from_selection(self, rdf, selection):
         l_rdf = rdf
         if selection.cuts:
+            # Also define a column with the name, to keep track and use in the histogram name
+            # Is it really the best solution?
+            cut_name = '__cut__' + selection.name
+            rdf = l_rdf.Define(cut_name, '1')
+            l_rdf = rdf
             for cut in selection.cuts:
                 logger.debug('%%%%% Creating Filter from cut {}'.format(
                     cut))
@@ -145,9 +150,15 @@ class RunManager:
         logger.debug('%%%%%%%%%% Histo1D from histo: created weight expression {}'.format(
             weight_expression))
 
+        cut_prefix = '__cut__'
+        selection_names = '-'.join([
+            column[len(cut_prefix):] for column in rdf.GetColumnNames() \
+                    if column.startswith(cut_prefix)])
+
         for nbins in book_histo.binning:
             name = '_'.join([var,
-                str(nbins), dataset_name])
+                str(nbins), dataset_name,
+                selection_names])
             if not weight_expression:
                 nbins_histos.append(
                     rdf.Histo1D((
