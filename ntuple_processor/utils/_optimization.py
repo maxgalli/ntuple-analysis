@@ -11,16 +11,42 @@ class Node:
             child for child in children]
 
     def __str__(self):
-        bar = 64 * '/'
-        qbar = 16 * '/'
-        hbar = 32 * '/'
+        node_intest =     '////// Node Object ///////'
+        end = ' //'
+        bar_end = '///'
+        safe_number_intest = len(node_intest)
+        objects_intests = [
+            '// Name:                  ',
+            '// Kind:                  ',
+            '// AnalysisFlowUnitBlock: ',
+            '// Children:              '
+            ]
+        objects = [
+            str(self.name),
+            str(self.kind),
+            str(self.afu_block),
+            str(self.children)
+            ]
+        objects_tuples = [(oi, o) for oi,o in zip(objects_intests, objects)]
+        safe_object = max(objects, key=len)
+        safe_number = len(safe_object)
+
+        def create_object_layout(intest, string):
+            return intest + string \
+                + (safe_number - len(string)) * ' ' \
+                + end
+
+        objects_layout = [create_object_layout(*tup) \
+            for tup in objects_tuples]
+        up_bar = node_intest \
+                + safe_number * '/' \
+                + bar_end
+        down_bar = (safe_number_intest + safe_number) * '/' \
+                    + bar_end
         layout = '\n'.join([
-            '\n' + qbar + ' Node object ' + hbar + 3 * '/',
-            '// Name:                  {}'.format(self.name),
-            '// Kind:                  {}'.format(self.kind),
-            '// AnalysisFlowUnitBlock: {}'.format(self.afu_block),
-            '// Children:              {}'.format(self.children),
-            bar ])
+            up_bar, *objects_layout, down_bar
+            ])
+
         return layout
 
     def __repr__(self):
