@@ -16,6 +16,9 @@ class Graph(Node):
     Args:
         analysis_flow_unit (AnalysisFlowUnit): analysis flow unit
             object from which a graph in its basic form is generated
+
+    Attributes:
+        nodes (list): list of the graph's nodes
     """
     def __init__(self, afu = None):
         if afu:
@@ -30,8 +33,11 @@ class Graph(Node):
             self.children.append(nodes[0])
             logger.debug('%%%%%%%%%% Constructing graph from AFU')
 
+    def __len__(self):
+        return len(self.get_nested_nodes())
+
     def __nodes_from_afu(self, afu):
-        nodes = []
+        nodes = list()
         for selection in afu.selections:
             nodes.append(
                 Node(
@@ -90,6 +96,8 @@ class GraphManager:
             print('Merged graphs:')
             for graph in merged_graphs:
                 print(graph)
+                print('Number of nodes: {}'.format(
+                    len(graph)))
         print_merged_graphs()
 
         self.graphs = merged_graphs
