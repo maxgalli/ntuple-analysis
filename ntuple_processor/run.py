@@ -98,13 +98,13 @@ class RunManager:
         return rdf
 
     def __cuts_and_weights_from_selection(self, rdf, selection):
-        l_rdf = rdf
+        # Also define a column with the name, to keep track and use in the histogram name
+        # Is it really the best solution?
+        selection_name = '__selection__' + selection.name
+        logger.debug('%%%%% Defining fake column with selection name {}'.format(
+            selection_name))
+        l_rdf = rdf.Define(selection_name, '1')
         if selection.cuts:
-            # Also define a column with the name, to keep track and use in the histogram name
-            # Is it really the best solution?
-            cut_name = '__cut__' + selection.name
-            rdf = l_rdf.Define(cut_name, '1')
-            l_rdf = rdf
             for cut in selection.cuts:
                 logger.debug('%%%%% Creating Filter from cut {}'.format(
                     cut))
@@ -144,21 +144,22 @@ class RunManager:
             var, rdf_max))
         nbins_histos = list()
 
+        cut_prefix = '__selection__'
+        selection_names = '-'.join([
+            column[len(cut_prefix):] for column in rdf.GetColumnNames() \
+                    if column.startswith(cut_prefix)])
+
         weight_expression = '*'.join([
             name for name in rdf.GetColumnNames() if name.startswith(
                 '__weight__')])
         logger.debug('%%%%%%%%%% Histo1D from histo: created weight expression {}'.format(
             weight_expression))
 
-        cut_prefix = '__cut__'
-        selection_names = '-'.join([
-            column[len(cut_prefix):] for column in rdf.GetColumnNames() \
-                    if column.startswith(cut_prefix)])
-
         for nbins in book_histo.binning:
-            name = '_'.join([var,
-                str(nbins), dataset_name,
-                selection_names])
+            name = '#'.join([var,
+                dataset_name,
+                selection_names,
+                str(nbins)])
             if not weight_expression:
                 nbins_histos.append(
                     rdf.Histo1D((
