@@ -34,7 +34,10 @@ class Graph(Node):
             logger.debug('%%%%%%%%%% Constructing graph from AFU')
 
     def __len__(self):
-        return len(self.get_nested_nodes())
+        return len(self.get_offspring())
+
+    def __repr__(self):
+        return '|'.join([node.name for node in self.get_offspring()])
 
     def __nodes_from_afu(self, afu):
         nodes = list()

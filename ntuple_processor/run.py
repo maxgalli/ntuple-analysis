@@ -28,6 +28,8 @@ class RunManager:
     def __init__(self, graphs):
         self.final_ptrs = []
         for graph in graphs:
+            logger.debug('%%%%%%%%%% Start converting graph {}'.format(
+                graph.__repr__()))
             # This gets the name of the graph being used
             # (which is also the name of the dataset
             # related to this graph), to put it in the
