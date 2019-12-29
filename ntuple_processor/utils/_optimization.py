@@ -10,6 +10,13 @@ class Node:
         self.children = [
             child for child in children]
 
+    def get_nested_nodes(self, nested_nodes = []):
+        nested_nodes.append(self)
+        if self.children:
+            for child in self.children:
+                child.get_nested_nodes(nested_nodes)
+        return nested_nodes
+
     def __str__(self):
         node_intest =     '////// Node Object ///////'
         end = ' //'
