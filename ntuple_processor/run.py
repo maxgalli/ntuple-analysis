@@ -127,14 +127,6 @@ class RunManager:
         return rdf.Sum(book_count.variable)
 
     def __histo1d_from_histo(self, rdf, book_histo, dataset_name):
-        # Debug
-        def print_info(rdf):
-            names = rdf.GetColumnNames()
-            print('%%%%%%%%%% Booking histogram - RDF columns:')
-            for name in names:
-                print(name)
-        #logger.debug(print_info(rdf))
-
         var = book_histo.variable
         rdf_min = rdf.Min['double'](var).GetValue()
         logger.debug('Minimum for variable {}: {}'.format(
@@ -176,5 +168,12 @@ class RunManager:
                         name, name, nbins,
                         rdf_min, rdf_max),
                         var, weight_expression))
+
+        # Debug
+        def print_infos(histos):
+            for histo in histos:
+                print('%%%%% Info for histogram {}'.format(histo.GetName()))
+                histo.Print('all')
+        print_infos(nbins_histos)
 
         return nbins_histos
