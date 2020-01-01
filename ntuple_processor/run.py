@@ -1,6 +1,8 @@
+from .utils import RDataFrameEssentials
+
 from ROOT import RDataFrame
 from ROOT import TFile
-from ROOT import TTree
+from ROOT import TChain
 
 import logging
 logger = logging.getLogger(__name__)
@@ -51,7 +53,7 @@ class RunManager:
             op.Write()
         root_file.Close()
 
-    def __node_to_root(self, node, rdf = None):
+    def __node_to_root(self, node, rdf_ess = None):
         logger.debug('%%%%%%%%%% __node_to_root, converting from Graph to ROOT language the following node\n{}'.format(
             node))
         if node.kind == 'dataset':
@@ -59,14 +61,14 @@ class RunManager:
                 node.afu_block)
         elif node.kind == 'selection':
             result = self.__cuts_and_weights_from_selection(
-                rdf, node.afu_block)
+                rdf_ess, node.afu_block)
         elif node.kind == 'action':
             if 'Count' in node.name:
                 result = self.__sum_from_count(
-                    rdf, node.afu_block)
+                    rdf_ess, node.afu_block)
             elif 'Histo' in node.name:
                 result = self.__histo1d_from_histo(
-                    rdf, node.afu_block, self._last_used_dataset)
+                    rdf_ess, node.afu_block, self._last_used_dataset)
         if node.children:
             for child in node.children:
                 logger.debug('%%%%% __node_to_root, do not return; apply actions in "{}" on RDF "{}"'.format(
@@ -89,17 +91,20 @@ class RunManager:
         else:
             raise NameError(
                 'Impossible to create RDataFrame with different tree names')
-        files = []
+        chain = TChain(tree_name)
         for ntuple in dataset.ntuples:
-            files.append(ntuple.path)
+            chain.Add(ntuple.path)
+            f_chain = TChain(ntuple.directory)
             for friend in ntuple.friends:
-                files.append(friend.path)
-        rdf = RDataFrame(tree_name, files)
-        return rdf
+                f_chain.Add(friend.path)
+            chain.AddFriend(f_chain)
+        rdf = RDataFrame(chain)
+        return RDataFrameEssentials(rdf, chain)
 
-    def __cuts_and_weights_from_selection(self, rdf, selection):
+    def __cuts_and_weights_from_selection(self, rdf_ess, selection):
         # Also define a column with the name, to keep track and use in the histogram name
         # Is it really the best solution?
+        rdf = rdf_ess.rdataframe
         logger.debug('%%%%% Initial number of events for selection {}: {}'.format(
             selection.name, rdf.Count().GetValue()))
         selection_name = '__selection__' + selection.name
@@ -123,12 +128,14 @@ class RunManager:
                 weight_name,
                 weight_expression))
             l_rdf = rdf
-        return l_rdf
+        return RDataFrameEssentials(l_rdf, rdf_ess.tchain)
 
-    def __sum_from_count(self, rdf, book_count):
+    def __sum_from_count(self, rdf_ess, book_count):
+        rdf = rdf_ess.rdataframe
         return rdf.Sum(book_count.variable)
 
-    def __histo1d_from_histo(self, rdf, book_histo, dataset_name):
+    def __histo1d_from_histo(self, rdf_ess, book_histo, dataset_name):
+        rdf = rdf_ess.rdataframe
         var = book_histo.variable
         rdf_min = rdf.Min['double'](var).GetValue()
         logger.debug('Minimum for variable {}: {}'.format(
