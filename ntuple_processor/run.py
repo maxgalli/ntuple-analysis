@@ -95,10 +95,10 @@ class RunManager:
         chain = TChain(tree_name)
         for ntuple in dataset.ntuples:
             chain.Add(ntuple.path)
-            f_chain = TChain(ntuple.directory)
             for friend in ntuple.friends:
+                f_chain = TChain(friend.directory)
                 f_chain.Add(friend.path)
-            chain.AddFriend(f_chain)
+                chain.AddFriend(f_chain)
         rdf = RDataFrame(chain)
         return RDataFrameEssentials(rdf, chain)
 
