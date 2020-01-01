@@ -53,22 +53,23 @@ class RunManager:
             op.Write()
         root_file.Close()
 
-    def __node_to_root(self, node, rdf_ess = None):
+    def __node_to_root(self, node, rdf = None):
         logger.debug('%%%%%%%%%% __node_to_root, converting from Graph to ROOT language the following node\n{}'.format(
             node))
         if node.kind == 'dataset':
-            result = self.__rdf_from_dataset(
+            rdf_ess = self.__rdf_from_dataset(
                 node.afu_block)
+            result = rdf_ess.rdataframe
         elif node.kind == 'selection':
             result = self.__cuts_and_weights_from_selection(
-                rdf_ess, node.afu_block)
+                rdf, node.afu_block)
         elif node.kind == 'action':
             if 'Count' in node.name:
                 result = self.__sum_from_count(
-                    rdf_ess, node.afu_block)
+                    rdf, node.afu_block)
             elif 'Histo' in node.name:
                 result = self.__histo1d_from_histo(
-                    rdf_ess, node.afu_block, self._last_used_dataset)
+                    rdf, node.afu_block, self._last_used_dataset)
         if node.children:
             for child in node.children:
                 logger.debug('%%%%% __node_to_root, do not return; apply actions in "{}" on RDF "{}"'.format(
@@ -101,10 +102,9 @@ class RunManager:
         rdf = RDataFrame(chain)
         return RDataFrameEssentials(rdf, chain)
 
-    def __cuts_and_weights_from_selection(self, rdf_ess, selection):
+    def __cuts_and_weights_from_selection(self, rdf, selection):
         # Also define a column with the name, to keep track and use in the histogram name
         # Is it really the best solution?
-        rdf = rdf_ess.rdataframe
         logger.debug('%%%%% Initial number of events for selection {}: {}'.format(
             selection.name, rdf.Count().GetValue()))
         selection_name = '__selection__' + selection.name
@@ -128,19 +128,17 @@ class RunManager:
                 weight_name,
                 weight_expression))
             l_rdf = rdf
-        return RDataFrameEssentials(l_rdf, rdf_ess.tchain)
+        return rdf
 
-    def __sum_from_count(self, rdf_ess, book_count):
-        rdf = rdf_ess.rdataframe
+    def __sum_from_count(self, rdf, book_count):
         return rdf.Sum(book_count.variable)
 
-    def __histo1d_from_histo(self, rdf_ess, book_histo, dataset_name):
-        rdf = rdf_ess.rdataframe
+    def __histo1d_from_histo(self, rdf, book_histo, dataset_name):
         var = book_histo.variable
-        rdf_min = rdf.Min['double'](var).GetValue()
+        rdf_min = rdf.Min(var).GetValue()
         logger.debug('Minimum for variable {}: {}'.format(
             var, rdf_min))
-        rdf_max = rdf.Max['double'](var).GetValue()
+        rdf_max = rdf.Max(var).GetValue()
         logger.debug('Maximum for variable {}: {}'.format(
             var, rdf_max))
         nbins_histos = list()
