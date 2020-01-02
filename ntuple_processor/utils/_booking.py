@@ -1,6 +1,8 @@
 import logging
 logger = logging.getLogger(__name__)
 
+import itertools
+
 
 
 class NtupleBase:
@@ -18,18 +20,40 @@ class NtupleBase:
 
 class Friend(NtupleBase):
 
-    pass
+    def __init__(self,
+            path, directory, tag = None):
+        NtupleBase.__init__(self, path, directory)
+        self.tag = tag
+
+    def __str__(self):
+        if self.tag is None:
+            return NtupleBase.__str__(self)
+        else:
+            layout = '(' + self.path \
+                    + ', ' + self.directory \
+                    + ', ' + 'tag = {}'.format(self.tag) \
+                    + ')'
+        return layout
 
 
 class Ntuple(NtupleBase):
 
-    def __init__(self, path, directory, friends = None):
+    def __init__(self, path, directory, friends = []):
         NtupleBase.__init__(self, path, directory)
-        self.friends = friends
+        self.friends = self.__add_tagged_friends(friends)
 
-    def add_to_friends(*new_friends):
-        for new_friend in new_friends:
-            self.friends.append(new_friend)
+    def __add_tagged_friends(self, friends):
+        for f1,f2 in itertools.combinations(friends, 2):
+            l1 = f1.path.split('/')
+            l2 = f2.path.split('/')
+            tags = list(set(l1).symmetric_difference(set(l2)))
+            if tags:
+                for t in tags:
+                    if t in l1 and f1.tag is None:
+                        f1.tag = t
+                    elif t in l2 and f2.tag is None:
+                        f2.tag = t
+        return friends
 
 
 class Dataset:
