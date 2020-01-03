@@ -3,7 +3,7 @@ from .utils import RDataFrameEssentials
 from ROOT import RDataFrame
 from ROOT import TFile
 from ROOT import TChain
-from ROOT import EnableImplicitMT as parallelize
+from ROOT import EnableImplicitMT
 
 import logging
 logger = logging.getLogger(__name__)
@@ -28,8 +28,10 @@ class RunManager:
             set of Filter operations performed on RDataFrames; on
             all them we need to perform a Write operation
     """
-    def __init__(self, graphs):
+    def __init__(self, graphs,
+            parallelize = False):
         self.final_ptrs = []
+        self.parallelize = parallelize
         for graph in graphs:
             # This gets the name of the graph being used
             # (which is also the name of the dataset
@@ -112,7 +114,8 @@ class RunManager:
             chain.AddFriend(ch)
         logger.debug('%%%%% Creating RDF from TChain ({}) with friends {}'.format(
             chain, [f for f in chain.GetListOfFriends()]))
-        parallelize()   # EnableImplicitMT()
+        if self.parallelize:
+            EnableImplicitMT()
         rdf = RDataFrame(chain)
         return RDataFrameEssentials(rdf, chain)
 
