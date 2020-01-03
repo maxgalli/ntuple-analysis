@@ -3,6 +3,7 @@ from .utils import RDataFrameEssentials
 from ROOT import RDataFrame
 from ROOT import TFile
 from ROOT import TChain
+from ROOT import EnableImplicitMT as parallelize
 
 import logging
 logger = logging.getLogger(__name__)
@@ -111,6 +112,7 @@ class RunManager:
             chain.AddFriend(ch)
         logger.debug('%%%%% Creating RDF from TChain ({}) with friends {}'.format(
             chain, [f for f in chain.GetListOfFriends()]))
+        parallelize()   # EnableImplicitMT()
         rdf = RDataFrame(chain)
         return RDataFrameEssentials(rdf, chain)
 
@@ -133,7 +135,7 @@ class RunManager:
             weight_name = '__weight__' + selection.name
             weight_expression = '*'.join([
                 weight[0] for weight in selection.weights])
-            rdf = l_rdf.Define(
+            rdf = l_rdf.DefineSlot(
                 weight_name,
                 weight_expression)
             logger.debug('%%%%% Defining {} column with weight expression {}'.format(
@@ -181,7 +183,7 @@ class RunManager:
                 weight_name = 'Weight'
                 logger.debug('%%%%%%%%%% Histo1D from histo: defining {} column with weight expression {}'.format(
                     weight_name, weight_expression))
-                l_rdf = rdf.Define(weight_name, weight_expression)
+                l_rdf = rdf.DefineSlot(weight_name, weight_expression)
                 nbins_histos.append(
                     l_rdf.Histo1D((
                         name, name, nbins,
