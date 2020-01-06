@@ -10,7 +10,6 @@ mt_channel = Selection(name = "mt",
                                "againstElectronDiscriminator"),
                            ("byTightIsolationMVArun2v1DBoldDMwLT_2>0.5", "tau_iso"),
                            ("iso_1<0.15", "muon_iso"),
-                           ("q_1*q_2<0", "os"),
                            #("trg_singlemuon==1", "trg_singlemuon")
                            ])
 
@@ -25,7 +24,6 @@ et_channel = Selection(name = "et",
                 "againstElectronDiscriminator"),
             ("byTightIsolationMVArun2017v2DBoldDMwLT2017_2>0.5", "tau_iso"),
             ("iso_1<0.15", "ele_iso"),
-            ("q_1*q_2<0", "os"),
             ("pt_2>30 && pt_1 > 25 && (((trg_singleelectron_35 == 1) || (trg_singleelectron_32 == 1) || ((trg_singleelectron_27 == 1))) || (abs(eta_1)>1.5 && isEmbedded)) || (pt_1>25 && pt_1<28 && pt_2>35 && ((isEmbedded && (abs(eta_1)>1.5)) || (trg_crossele_ele24tau30 == 1)))", "trg_selection")
         ])
 
@@ -43,7 +41,6 @@ tt_channel = Selection(name = "tt",
                 "tau_1_iso"),
             ("byTightIsolationMVArun2017v2DBoldDMwLT2017_2>0.5",
                 "tau_2_iso"),
-            ("q_1*q_2<0", "os"),
             ("(trg_doubletau_35_tightiso_tightid == 1) || (trg_doubletau_40_mediso_tightid == 1) || (trg_doubletau_40_tightiso == 1)", "trg_selection")
         ])
 
@@ -55,7 +52,6 @@ em_channel = Selection(name = "em",
             ("dilepton_veto<0.5", "dilepton_veto"),
             ("iso_1<0.15", "ele_iso"),
             ("iso_2<0.2", "muon_iso"),
-            ("q_1*q_2<0", "os"),
             ("pt_2>10 && ((trg_muonelectron_mu23ele12 == 1) || (trg_muonelectron_mu8ele23 == 1))",
                 "trg_selection")
         ])
