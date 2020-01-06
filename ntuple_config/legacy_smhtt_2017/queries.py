@@ -50,10 +50,10 @@ queryM50NLO_inc = {
     "campaign": "RunIIFall17MiniAODv2",
     "generator": "amcatnlo\-pythia8",
     }
-DY_query = [
+DY_query_nlo = [
     queryM50NLO_inc, queryEWKZ
     ]
-DY_query_ntlo = [
+DY_query = [
     queryM50_inclusive_2_3jet,
     queryM50_1jet_v1,
     queryM50_1jet_ext1_v2,
