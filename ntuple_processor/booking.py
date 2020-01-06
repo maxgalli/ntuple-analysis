@@ -83,7 +83,9 @@ class DatasetFromDatabase:
             if not os.path.exists(path_to_database):
                 logger.fatal('No database available for {}'.format(
                     path_to_database))
-                raise Exception
+                raise FileNotFoundError(
+                    'No database available for {}'.format(
+                        path_to_database))
             return json.load(open(path_to_database, "r"))
 
         def check_recursively(entry, query, database):
@@ -132,10 +134,12 @@ class DatasetFromDatabase:
                 folder, path_to_root_file, tree_name):
             root_file = TFile(path_to_root_file)
             if root_file.IsZombie():
-                logger.warning(
-                    'File {} does not exist, zombie created'.format(
+                logger.fatal(
+                    'File {} does not exist, abort'.format(
                         path_to_root_file))
-                return None
+                raise FileNotFoundError(
+                    'File {} does not exist, abort'.format(
+                        path_to_root_file))
             else:
                 if folder not in root_file.GetListOfKeys():
                     raise NameError(
