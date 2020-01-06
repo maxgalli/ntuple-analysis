@@ -141,7 +141,7 @@ class RunManager:
             weight_name = '__weight__' + selection.name
             weight_expression = '*'.join([
                 weight[0] for weight in selection.weights])
-            rdf = l_rdf.DefineSlot(
+            rdf = l_rdf.Define(
                 weight_name,
                 weight_expression)
             logger.debug('%%%%% Defining {} column with weight expression {}'.format(
@@ -189,7 +189,7 @@ class RunManager:
                 weight_name = 'Weight'
                 logger.debug('%%%%%%%%%% Histo1D from histo: defining {} column with weight expression {}'.format(
                     weight_name, weight_expression))
-                l_rdf = rdf.DefineSlot(weight_name, weight_expression)
+                l_rdf = rdf.Define(weight_name, weight_expression)
                 nbins_histos.append(
                     l_rdf.Histo1D((
                         name, name, nbins,
