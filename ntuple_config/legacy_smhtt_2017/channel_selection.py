@@ -2,16 +2,17 @@ from ntuple_processor.utils import Selection
 
 mt_channel = Selection(name = "mt",
                        cuts = [
+                           ("flagMETFilter == 1", "METFilter"),
                            ("extraelec_veto<0.5", "extraelec_veto"),
                            ("extramuon_veto<0.5", "extramuon_veto"),
                            ("dilepton_veto<0.5", "dilepton_veto"),
                            ("againstMuonTight3_2>0.5", "againstMuonDiscriminator"),
                            ("againstElectronVLooseMVA6_2>0.5",
                                "againstElectronDiscriminator"),
-                           ("byTightIsolationMVArun2v1DBoldDMwLT_2>0.5", "tau_iso"),
+                           ("byTightIsolationMVArun2017v2DBoldDMwLT2017_2>0.5", "tau_iso"),
                            ("iso_1<0.15", "muon_iso"),
-                           #("trg_singlemuon==1", "trg_singlemuon")
-                           ])
+                           ("pt_2>30 && ((trg_singlemuon_27 == 1) || (trg_singlemuon_24 == 1) || (pt_1 < 25 && trg_crossmuon_mu20tau27 == 1))", "trg_selection")
+                       ])
 
 et_channel = Selection(name = "et",
     cuts = [
