@@ -448,19 +448,19 @@ def VVJ_process_selection(channel):
 ##### VVL #####
 
 def VVL_process_selection(channel):
-    if "mt" in self.channel.name:
+    if "mt" in channel:
         emb_veto = "!(gen_match_1==4 && gen_match_2==5)"
         ff_veto = "!(gen_match_2 == 6)"
-    elif "et" in self.channel.name:
+    elif "et" in channel:
         emb_veto = "!(gen_match_1==3 && gen_match_2==5)"
         ff_veto = "!(gen_match_2 == 6)"
-    elif "tt" in self.channel.name:
+    elif "tt" in channel:
         emb_veto = "!(gen_match_1==5 && gen_match_2==5)"
         ff_veto = "!(gen_match_1 == 6 || gen_match_2 == 6)"
-    elif "em" in self.channel.name:
+    elif "em" in channel:
         emb_veto = "!(gen_match_1==3 && gen_match_2==4)"
         ff_veto = "(1.0)"
-    elif "mm" in self.channel.name:
+    elif "mm" in channel:
         emb_veto = "!(gen_match_1==4 && gen_match_2==4)"
         ff_veto = "(1.0)"
     return Selection(name = "VVL",
