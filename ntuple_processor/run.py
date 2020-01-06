@@ -44,14 +44,17 @@ class RunManager:
         logger.debug('%%%%%%%%%% Final pointers (histos and cunts): {}'.format(
             self.final_ptrs))
 
-    def run_locally(self, of_name):
+    def run_locally(self, of_name, update = False):
         """Save to file the histograms booked.
 
         Args:
             of_name (str): Name of the output .root
                 file
         """
-        root_file = TFile(of_name, 'RECREATE')
+        if update:
+            root_file = TFile(of_name, 'UPDATE')
+        else:
+            root_file = TFile(of_name, 'RECREATE')
         for op in self.final_ptrs:
             op.Write()
         root_file.Close()
