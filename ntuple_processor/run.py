@@ -4,6 +4,7 @@ from ROOT import RDataFrame
 from ROOT import TFile
 from ROOT import TChain
 from ROOT import EnableImplicitMT
+from ROOT.std import vector
 
 import logging
 logger = logging.getLogger(__name__)
@@ -84,11 +85,7 @@ class RunManager:
         else:
             logger.debug('%%%%% __node_to_root, final return: append \n{} to final pointers'.format(
                 result))
-            if isinstance(result, list):
-                for histo in result:
-                    self.final_ptrs.append(histo)
-            else:
-                self.final_ptrs.append(result)
+            self.final_ptrs.append(result)
 
     def __rdf_from_dataset(self, dataset):
         t_names = [ntuple.directory for ntuple in \
@@ -155,52 +152,51 @@ class RunManager:
 
     def __histo1d_from_histo(self, rdf, book_histo, dataset_name):
         var = book_histo.variable
-        rdf_min = rdf.Min(var).GetValue()
-        logger.debug('Minimum for variable {}: {}'.format(
-            var, rdf_min))
-        rdf_max = rdf.Max(var).GetValue()
-        logger.debug('Maximum for variable {}: {}'.format(
-            var, rdf_max))
-        nbins_histos = list()
+        nbins = book_histo.binning.nbins
+        edges = book_histo.binning.edges
 
+        # Get names of all the cuts applied, saved as rdf columns
         cut_prefix = '__selection__'
         selection_names = '-'.join([
             column[len(cut_prefix):] for column in rdf.GetColumnNames() \
                     if column.startswith(cut_prefix)])
 
+        # Create macro weight string from sub-weights applied
+        # (saved earlier as rdf columns)
         weight_expression = '*'.join([
             name for name in rdf.GetColumnNames() if name.startswith(
                 '__weight__')])
         logger.debug('%%%%%%%%%% Histo1D from histo: created weight expression {}'.format(
             weight_expression))
 
-        for nbins in book_histo.binning:
-            name = '#'.join([var,
-                dataset_name,
-                selection_names,
-                str(nbins)])
-            if not weight_expression:
-                nbins_histos.append(
-                    rdf.Histo1D((
-                        name, name, nbins,
-                        rdf_min, rdf_max),
-                        var))
-            else:
-                weight_name = 'Weight'
-                logger.debug('%%%%%%%%%% Histo1D from histo: defining {} column with weight expression {}'.format(
-                    weight_name, weight_expression))
-                l_rdf = rdf.Define(weight_name, weight_expression)
-                nbins_histos.append(
-                    l_rdf.Histo1D((
-                        name, name, nbins,
-                        rdf_min, rdf_max),
-                        var, weight_expression))
+        # Create std::vector with the histogram edges
+        l_edges = vector['double']()
+        for edge in edges:
+            l_edges.push_back(edge)
+
+        # Create histogram output name
+        name = '#'.join([var,
+            dataset_name,
+            selection_names,
+            str(nbins)])
+
+        if not weight_expression:
+            histo = rdf.Histo1D((
+                    name, name, nbins, l_edges.data()),
+                    var)
+        else:
+            weight_name = 'Weight'
+            logger.debug('%%%%%%%%%% Histo1D from histo: defining {} column with weight expression {}'.format(
+                weight_name, weight_expression))
+            l_rdf = rdf.Define(weight_name, weight_expression)
+            histo = l_rdf.Histo1D((
+                name, name, nbins, l_edges.data()),
+                var, weight_expression)
 
         # Debug
-        def print_infos(histos):
-            for histo in histos:
-                print('%%%%% Info for histogram {}'.format(histo.GetName()))
-                histo.Print('all')
-        print_infos(nbins_histos)
+        def print_infos(histo):
+            print('%%%%% Info for histogram {}'.format(histo.GetName()))
+            histo.Print('all')
+        print_infos(histo)
 
-        return nbins_histos
+        return histo
