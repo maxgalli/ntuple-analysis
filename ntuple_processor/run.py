@@ -30,9 +30,11 @@ class RunManager:
             all them we need to perform a Write operation
     """
     def __init__(self, graphs,
-            parallelize = False):
+            parallelize = False,
+            nthreads = 0):
         self.final_ptrs = []
         self.parallelize = parallelize
+        self.nthreads = nthreads
         for graph in graphs:
             # This gets the name of the graph being used
             # (which is also the name of the dataset
@@ -115,7 +117,7 @@ class RunManager:
         logger.debug('%%%%% Creating RDF from TChain ({}) with friends {}'.format(
             chain, [f for f in chain.GetListOfFriends()]))
         if self.parallelize:
-            EnableImplicitMT()
+            EnableImplicitMT(self.nthreads)
         rdf = RDataFrame(chain)
         return RDataFrameEssentials(rdf, chain)
 
