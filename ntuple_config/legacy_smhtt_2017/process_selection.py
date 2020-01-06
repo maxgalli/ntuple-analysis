@@ -332,6 +332,30 @@ def __get_ZL_cut(channel):
     return (emb_veto, ff_veto)
 
 
+##### ZJ #####
+
+def ZJ_process_selection(channel):
+    veto = __get_ZJ_cut(channel)
+    return Selection(name = "ZJ",
+                     cuts = [(__get_ZJ_cut(channel), 'dy_fakes')],
+                     weights = DY_process_selection.weights)
+
+def ZJ_nlo_process_selection(channel):
+    veto = __get_ZJ_cut(channel)
+    return Selection(name = "ZJ_nlo",
+                     cuts = [(__get_ZJ_cut(channel), 'dy_fakes')],
+                     weights = DY_nlo_process_selection.weights)
+
+def __get_ZJ_cut(channel):
+    ct = ""
+    if "mt" in channel or "et" in channel:
+        ct = "gen_match_2 == 6"
+    elif "tt" in channel:
+        ct = "(gen_match_1 == 6 || gen_match_2 == 6)"
+    elif "em" in channel:
+        ct = "0 == 1"
+
+
 ##### TTT #####
 
 def TTT_process_selection(channel):
