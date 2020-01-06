@@ -117,6 +117,14 @@ class Selection:
                     'TypeError: a list of tuples is needed.\n')
 
 
+class Binning:
+    def __init__(self,
+            name, edges):
+        self.name = name
+        self.edges = edges
+        self.nbins = len(edges) - 1
+
+
 class Action:
     def __init__(self,
             name, variable):
@@ -135,6 +143,7 @@ class BookCount(Action):
 class BookHisto(Action):
     def __init__(
             self,
-            variable, binning):
+            variable, edges):
         Action.__init__(self, 'BookHisto', variable)
-        self.binning = binning
+        self.binning = Binning(
+            variable, edges)
