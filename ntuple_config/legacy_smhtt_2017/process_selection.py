@@ -497,3 +497,21 @@ def ZH_process_selection(channel):
 def ttH_process_selection(channel):
     return Selection(name = "ttH",
                      weights = HTT_process_selection(channel).weights)
+
+
+##### ggH125 #####
+
+def ggH125_process_selection(channel):
+    ggH125_weights = HTT_process_selection(channel).weights + [
+        ("8.22976e-8", "numberGeneratedEventsWeight"),
+        ("ggh_NNLO_weight", "gghNNLO"),
+        ("1.01", "bbh_inclusion_weight")
+        ]
+    return Selection(name = "ggH125", weights = ggH125_weights)
+
+
+##### qqH125 #####
+
+def qqH125_process_selection(channel):
+    return Selection(name = "qqH125",
+                     weights = HTT_process_selection(channel).weights)
