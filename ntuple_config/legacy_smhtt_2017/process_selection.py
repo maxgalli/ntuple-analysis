@@ -1,7 +1,23 @@
 from ntuple_processor.utils import Selection
 
 
-##### Miscellaneous #####
+
+"""Base processes
+
+List of base processes, mostly containing only weights:
+    - triggerweight
+    - singlelepton_triggerweight
+    - tau_by_iso_id_weight
+    - ele_hlt_Z_vtx_weight
+    - DY_process_selection
+    - DY_nlo_process_selection
+    - TT_process_selection
+    - VV_process_selection
+    - W_process_selection
+    - HTT_process_selection
+    - HWW_process_selection
+"""
+
 
 def triggerweight(channel):
     weight = ("1.0", "triggerweight")
@@ -81,8 +97,6 @@ def ele_hlt_Z_vtx_weight(channel):
     return weight
 
 
-##### Drell-Yan #####
-
 DY_process_base_weights = [
     ("puweight", "puweight"),
     ("idWeight_1*idWeight_2","idweight"),
@@ -103,11 +117,11 @@ DY_process_weights_nlo.append((
 
 DY_process_selection = Selection(name = "DrellYan",
                                  weights = DY_process_weights)
+
+
 DY_nlo_process_selection = Selection(name = "DrellYan_nlo",
                                      weights = DY_process_weights_nlo)
 
-
-##### TauTau #####
 
 def TT_process_selection(channel):
     return Selection(
@@ -131,8 +145,6 @@ def TT_process_selection(channel):
     )
 
 
-##### VV #####
-
 def VV_process_selection(channel):
     return Selection(
     name = "VV",
@@ -154,8 +166,6 @@ def VV_process_selection(channel):
     )
 
 
-##### W #####
-
 def W_process_selection(channel):
     return Selection(
     name = "W",
@@ -175,8 +185,6 @@ def W_process_selection(channel):
         ]
     )
 
-
-##### HTauTau #####
 
 def HTT_process_selection(channel):
     return Selection(
@@ -199,8 +207,6 @@ def HTT_process_selection(channel):
     )
 
 
-##### HWW #####
-
 def HWW_process_selection(channel):
     return Selection(
     name = "HWW",
@@ -222,7 +228,31 @@ def HWW_process_selection(channel):
     )
 
 
-##### ZTauTau #####
+
+"""Built-on-top processes
+
+List of other processes adding cuts (or weights) on top of base processes:
+    - ZTT_process_selection
+    - ZTT_nlo_process_selection
+    - ZTT_embedded_process_selection
+    - ZL_process_selection
+    - ZL_nlo_process_selection
+    - ZJ_process_selection
+    - ZJ_nlo_process_selection
+    - TTT_process_selection
+    - TTL_process_selection
+    - TTJ_process_selection
+    - VVT_process_selection
+    - VVJ_process_selection
+    - VVL_process_selection
+    - VH_process_selection
+    - WH_process_selection
+    - ZH_process_selection
+    - ttH_process_selection
+    - ggH125_process_selection
+    - qqH125_process_selection
+"""
+
 
 def ZTT_process_selection(channel):
     tt_cut = __get_ZTT_cut(channel)
@@ -248,8 +278,6 @@ def __get_ZTT_cut(channel):
     elif "mm" in channel:
         return "gen_match_1==4 && gen_match_2==4"
 
-
-##### ZTauTau Embedded #####
 
 def ZTT_embedded_process_selection(channel):
     if "mt" in channel:
@@ -299,8 +327,6 @@ def ZTT_embedded_process_selection(channel):
                      weights = ztt_embedded_weights)
 
 
-##### ZL #####
-
 def ZL_process_selection(channel):
     veto = __get_ZL_cut(channel)
     return Selection(name = "ZL",
@@ -332,8 +358,6 @@ def __get_ZL_cut(channel):
     return (emb_veto, ff_veto)
 
 
-##### ZJ #####
-
 def ZJ_process_selection(channel):
     veto = __get_ZJ_cut(channel)
     return Selection(name = "ZJ",
@@ -356,8 +380,6 @@ def __get_ZJ_cut(channel):
         ct = "0 == 1"
 
 
-##### TTT #####
-
 def TTT_process_selection(channel):
     if "mt" in channel:
         tt_cut = "gen_match_1==4 && gen_match_2==5"
@@ -373,8 +395,6 @@ def TTT_process_selection(channel):
                      cuts = [(tt_cut, "ttt_cut")],
                      weights = TT_process_selection(channel).weights)
 
-
-##### TTL #####
 
 def TTL_process_selection(channel):
     if "mt" in channel:
@@ -397,8 +417,6 @@ def TTL_process_selection(channel):
                      weights = TT_process_selection(channel).weights)
 
 
-##### TTJ #####
-
 def TTJ_process_selection(channel):
     ct = ""
     if "mt" in channel or "et" in channel:
@@ -411,8 +429,6 @@ def TTJ_process_selection(channel):
                      cuts = [(ct, "tt_fakes")],
                      weights = TT_process_selection(channel).weights)
 
-
-##### VVT #####
 
 def VVT_process_selection(channel):
     if "mt" in channel:
@@ -430,8 +446,6 @@ def VVT_process_selection(channel):
                      weights = VV_process_selection(channel).weights)
 
 
-##### VVJ #####
-
 def VVJ_process_selection(channel):
     ct = ""
     if "mt" in channel or "et" in channel:
@@ -444,8 +458,6 @@ def VVJ_process_selection(channel):
                      cuts = [(ct, "vv_fakes")],
                      weights = VV_process_selection(channel).weights)
 
-
-##### VVL #####
 
 def VVL_process_selection(channel):
     if "mt" in channel:
@@ -468,15 +480,11 @@ def VVL_process_selection(channel):
                      weights = VV_process_selection(channel).weights)
 
 
-##### VH #####
-
 def VH_process_selection(channel):
     return Selection(name = "VH",
                      cuts = [("(htxs_stage1p1cat>=300)&&(htxs_stage1p1cat<=505)", "htxs_match")],
                      weights = HTT_process_selection(channel).weights)
 
-
-##### WH #####
 
 def WH_process_selection(channel):
     return Selection(name = "WH",
@@ -484,22 +492,16 @@ def WH_process_selection(channel):
                      weights = HTT_process_selection(channel).weights)
 
 
-##### ZH #####
-
 def ZH_process_selection(channel):
     return Selection(name = "ZH",
                      cuts = [("(htxs_stage1p1cat>=400)&&(htxs_stage1p1cat<=405)", "htxs_match")],
                      weights = HTT_process_selection(channel).weights)
 
 
-##### ttH #####
-
 def ttH_process_selection(channel):
     return Selection(name = "ttH",
                      weights = HTT_process_selection(channel).weights)
 
-
-##### ggH125 #####
 
 def ggH125_process_selection(channel):
     ggH125_weights = HTT_process_selection(channel).weights + [
@@ -509,8 +511,6 @@ def ggH125_process_selection(channel):
         ]
     return Selection(name = "ggH125", weights = ggH125_weights)
 
-
-##### qqH125 #####
 
 def qqH125_process_selection(channel):
     return Selection(name = "qqH125",
