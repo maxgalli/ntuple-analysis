@@ -171,7 +171,15 @@ class DatasetFromDatabase:
                     friend_paths.append(os.path.join(
                         friends_base_directory, name, "{}.root".format(name)))
                 for friend_path in friend_paths:
-                    friends.append(Friend(friend_path, tdf_tree))
+                    if os.path.isfile(friend_path):
+                        friends.append(Friend(friend_path, tdf_tree))
+                    else:
+                        logger.fatal(
+                            'File {} does not exist, abort'.format(
+                                friend_path))
+                        raise FileNotFoundError(
+                            'File {} does not exist, abort'.format(
+                                friend_path))
                 ntuples.append(Ntuple(root_file, tdf_tree, friends))
         dataset = Dataset(dataset_name, ntuples)
 
