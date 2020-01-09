@@ -180,7 +180,7 @@ class RunManager:
         name = '#'.join([var,
             dataset_name,
             selection_names,
-            str(nbins)])
+            str(nbins) + 'bins'])
 
         if not weight_expression:
             histo = rdf.Histo1D((
