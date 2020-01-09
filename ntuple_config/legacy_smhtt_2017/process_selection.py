@@ -14,6 +14,7 @@ List of base processes, mostly containing only weights:
     - TT_process_selection
     - VV_process_selection
     - W_process_selection
+    - HTT_base_process_selection
     - HTT_process_selection
     - HWW_process_selection
 """
@@ -186,12 +187,11 @@ def W_process_selection(channel):
     )
 
 
-def HTT_process_selection(channel):
+def HTT_base_process_selection(channel):
     return Selection(
     name = "HTT",
     weights = [
         ("generatorWeight", "generatorWeight"),
-        ("numberGeneratedEventsWeight", "numberGeneratedEventsWeight"),
         ("crossSectionPerEventWeight", "crossSectionPerEventWeight"),
         ("puweight", "puweight"),
         ("idWeight_1*idWeight_2","idweight"),
@@ -205,6 +205,13 @@ def HTT_process_selection(channel):
         #self.era.lumi_weight)
         ]
     )
+
+
+def HTT_process_selection(channel):
+    HTT_weights = HTT_base_process_selection(channel).weights + [
+        ("numberGeneratedEventsWeight", "numberGeneratedEventsWeight")
+        ]
+    return Selection(name = "ggH125", weights = HTT_weights)
 
 
 def HWW_process_selection(channel):
@@ -505,7 +512,7 @@ def ttH_process_selection(channel):
 
 
 def ggH125_process_selection(channel):
-    ggH125_weights = HTT_process_selection(channel).weights + [
+    ggH125_weights = HTT_base_process_selection(channel).weights + [
         ("8.22976e-8", "numberGeneratedEventsWeight"),
         ("ggh_NNLO_weight", "gghNNLO"),
         ("1.01", "bbh_inclusion_weight")
