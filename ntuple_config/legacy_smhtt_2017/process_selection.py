@@ -371,13 +371,14 @@ def ZJ_nlo_process_selection(channel):
                      weights = DY_nlo_process_selection.weights)
 
 def __get_ZJ_cut(channel):
-    ct = ""
     if "mt" in channel or "et" in channel:
-        ct = "gen_match_2 == 6"
+        return "gen_match_2 == 6"
     elif "tt" in channel:
-        ct = "(gen_match_1 == 6 || gen_match_2 == 6)"
+        return "(gen_match_1 == 6 || gen_match_2 == 6)"
     elif "em" in channel:
-        ct = "0 == 1"
+        return "0 == 1"
+    else:
+        return ""
 
 
 def TTT_process_selection(channel):
