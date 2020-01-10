@@ -32,7 +32,7 @@ class RunManager:
             nthreads = 0):
         self.final_ptrs = list()
         self.tchains = list()
-        self.friend_chains_dicts = list()
+        self.friend_tchains = list()
         self.parallelize = parallelize
         self.nthreads = nthreads
         for graph in graphs:
@@ -54,6 +54,8 @@ class RunManager:
             of_name (str): Name of the output .root
                 file
         """
+        logger.debug('%%%%%%%%%% Chains {} and friend chains {} still alive'.format(
+            self.tchains, self.friend_tchains))
         if update:
             root_file = TFile(of_name, 'UPDATE')
         else:
@@ -113,14 +115,15 @@ class RunManager:
             ftag_fchain))
         for ch in ftag_fchain.values():
             chain.AddFriend(ch)
+            # Keep friend chains alive
+            self.friend_tchains.append(ch)
         logger.debug('%%%%% Creating RDF from TChain ({}) with friends {}'.format(
             chain, [f for f in chain.GetListOfFriends()]))
         if self.parallelize:
             EnableImplicitMT(self.nthreads)
-        rdf = RDataFrame(chain)
-        # Keep all the chains alive
+        # Keep main chain alive
         self.tchains.append(chain)
-        self.friend_chains_dicts.append(ftag_fchain)
+        rdf = RDataFrame(chain)
         return rdf
 
     def __cuts_and_weights_from_selection(self, rdf, selection):
