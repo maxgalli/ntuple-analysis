@@ -133,10 +133,13 @@ class RunManager:
             selection_name))
         l_rdf = rdf.Define(selection_name, '1')
         if selection.cuts:
-            merged_cut = ' && '.join([cut[0] for cut in selection.cuts])
-            logger.debug('%%%%% Applying merged cut {}'.format(
-                merged_cut))
-            rdf = l_rdf.Filter(merged_cut)
+            cut_name = '__cut__' + selection.name
+            cut_expression = ' && '.join([cut[0] for cut in selection.cuts])
+            logger.debug('%%%%% Definig merged cut {} column'.format(
+                cut_expression))
+            rdf = l_rdf.Define(
+                cut_name,
+                cut_expression)
             l_rdf = rdf
         if selection.weights:
             weight_name = '__weight__' + selection.name
@@ -172,6 +175,17 @@ class RunManager:
                 '__weight__')])
         logger.debug('%%%%%%%%%% Histo1D from histo: created weight expression {}'.format(
             weight_expression))
+
+        # Create macro cut string from sub-cuts applied
+        # (saved earlier as rdf columns)
+        cut_expression = ' && '.join([
+            name for name in rdf.GetColumnNames() if name.startswith(
+                '__cut__')])
+        logger.debug('%%%%%%%%%% Histo1D from histo: created cut expression {}'.format(
+            cut_expression))
+        if cut_expression:
+            l_rdf = rdf.Filter(cut_expression)
+            rdf = l_rdf
 
         # Create std::vector with the histogram edges
         l_edges = vector['double']()
