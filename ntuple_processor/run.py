@@ -1,5 +1,3 @@
-from .utils import RDataFrameEssentials
-
 from ROOT import RDataFrame
 from ROOT import TFile
 from ROOT import TChain
@@ -32,7 +30,9 @@ class RunManager:
     def __init__(self, graphs,
             parallelize = False,
             nthreads = 0):
-        self.final_ptrs = []
+        self.final_ptrs = list()
+        self.tchains = list()
+        self.friend_chains_dicts = list()
         self.parallelize = parallelize
         self.nthreads = nthreads
         for graph in graphs:
@@ -66,9 +66,8 @@ class RunManager:
         logger.debug('%%%%%%%%%% __node_to_root, converting from Graph to ROOT language the following node\n{}'.format(
             node))
         if node.kind == 'dataset':
-            rdf_ess = self.__rdf_from_dataset(
+            result = self.__rdf_from_dataset(
                 node.afu_block)
-            result = rdf_ess.rdataframe
         elif node.kind == 'selection':
             result = self.__cuts_and_weights_from_selection(
                 rdf, node.afu_block)
@@ -119,7 +118,10 @@ class RunManager:
         if self.parallelize:
             EnableImplicitMT(self.nthreads)
         rdf = RDataFrame(chain)
-        return RDataFrameEssentials(rdf, chain)
+        # Keep all the chains alive
+        self.tchains.append(chain)
+        self.friend_chains_dicts.append(ftag_fchain)
+        return rdf
 
     def __cuts_and_weights_from_selection(self, rdf, selection):
         # Also define a column with the name, to keep track and use in the histogram name

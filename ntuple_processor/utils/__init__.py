@@ -7,5 +7,3 @@ from ._booking import BookCount
 from ._booking import BookHisto
 
 from ._optimization import Node
-
-from ._run import RDataFrameEssentials
