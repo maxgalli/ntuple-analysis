@@ -9,6 +9,7 @@ List of base processes, mostly containing only weights:
     - singlelepton_triggerweight
     - tau_by_iso_id_weight
     - ele_hlt_Z_vtx_weight
+    - lumi_weight
     - DY_process_selection
     - DY_nlo_process_selection
     - TT_process_selection
@@ -98,6 +99,9 @@ def ele_hlt_Z_vtx_weight(channel):
     return weight
 
 
+lumi_weight = ("41.529 * 1000.0", "lumi")
+
+
 DY_process_base_weights = [
     ("puweight", "puweight"),
     ("idWeight_1*idWeight_2","idweight"),
@@ -141,7 +145,7 @@ def TT_process_selection(channel):
         tau_by_iso_id_weight(channel),
         ele_hlt_Z_vtx_weight(channel),
         ("prefiringweight", "prefireWeight"),
-        #self.era.lumi_weight
+        lumi_weight
         ]
     )
 
@@ -162,7 +166,7 @@ def VV_process_selection(channel):
         ele_hlt_Z_vtx_weight(channel),
         ("crossSectionPerEventWeight", "crossSectionPerEventWeight"),
         ("prefiringweight", "prefireWeight"),
-        #self.era.lumi_weight
+        lumi_weight
         ]
     )
 
@@ -182,7 +186,7 @@ def W_process_selection(channel):
         tau_by_iso_id_weight(channel),
         ele_hlt_Z_vtx_weight(channel),
         ("prefiringweight", "prefireWeight"),
-        #self.era.lumi_weight)
+        lumi_weight
         ]
     )
 
@@ -202,7 +206,7 @@ def HTT_base_process_selection(channel):
         tau_by_iso_id_weight(channel),
         ele_hlt_Z_vtx_weight(channel),
         ("prefiringweight", "prefireWeight"),
-        #self.era.lumi_weight)
+        lumi_weight
         ]
     )
 
@@ -230,7 +234,7 @@ def HWW_process_selection(channel):
         tau_by_iso_id_weight(channel),
         ele_hlt_Z_vtx_weight(channel),
         ("prefiringweight", "prefireWeight"),
-        #self.era.lumi_weight
+        lumi_weight
         ]
     )
 
