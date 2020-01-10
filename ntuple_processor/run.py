@@ -133,11 +133,11 @@ class RunManager:
             selection_name))
         l_rdf = rdf.Define(selection_name, '1')
         if selection.cuts:
-            for cut in selection.cuts:
-                logger.debug('%%%%% Creating Filter from cut {}'.format(
-                    cut))
-                rdf = l_rdf.Filter(cut[0])
-                l_rdf = rdf
+            merged_cut = ' && '.join([cut[0] for cut in selection.cuts])
+            logger.debug('%%%%% Applying merged cut {}'.format(
+                merged_cut))
+            rdf = l_rdf.Filter(merged_cut)
+            l_rdf = rdf
         if selection.weights:
             weight_name = '__weight__' + selection.name
             weight_expression = '*'.join([
