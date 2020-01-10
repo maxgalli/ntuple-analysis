@@ -195,10 +195,4 @@ class RunManager:
                 name, name, nbins, l_edges.data()),
                 var, weight_expression)
 
-        # Debug
-        def print_infos(histo):
-            print('%%%%% Info for histogram {}'.format(histo.GetName()))
-            histo.Print('all')
-        print_infos(histo)
-
         return histo
