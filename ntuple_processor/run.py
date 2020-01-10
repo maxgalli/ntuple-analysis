@@ -126,8 +126,8 @@ class RunManager:
     def __cuts_and_weights_from_selection(self, rdf, selection):
         # Also define a column with the name, to keep track and use in the histogram name
         # Is it really the best solution?
-        logger.debug('%%%%% Initial number of events for selection {}: {}'.format(
-            selection.name, rdf.Count().GetValue()))
+        #logger.debug('%%%%% Initial number of events for selection {}: {}'.format(
+            #selection.name, rdf.Count().GetValue()))
         selection_name = '__selection__' + selection.name
         logger.debug('%%%%% Defining fake column with selection name {}'.format(
             selection_name))
