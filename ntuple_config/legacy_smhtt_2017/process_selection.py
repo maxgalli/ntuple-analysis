@@ -10,8 +10,7 @@ List of base processes, mostly containing only weights:
     - tau_by_iso_id_weight
     - ele_hlt_Z_vtx_weight
     - lumi_weight
-    - DY_process_selection
-    - DY_nlo_process_selection
+    - DY_base_process_selection
     - TT_process_selection
     - VV_process_selection
     - W_process_selection
@@ -102,31 +101,23 @@ def ele_hlt_Z_vtx_weight(channel):
 lumi_weight = ("41.529 * 1000.0", "lumi")
 
 
-DY_process_base_weights = [
-    ("puweight", "puweight"),
-    ("idWeight_1*idWeight_2","idweight"),
-    ("isoWeight_1*isoWeight_2","isoweight"),
-    ("trackWeight_1*trackWeight_2","trackweight"),
-    ("eleTauFakeRateWeight*muTauFakeRateWeight", "leptonTauFakeRateWeight"),
-    ("zPtReweightWeight", "zPtReweightWeight"),
-    ("prefiringweight", "prefireWeight"),
-    lumi_weight
-    ]
-DY_process_weights = DY_process_base_weights
-DY_process_weights_nlo = DY_process_base_weights
-DY_process_weights.append((
-        "((genbosonmass >= 50.0)*6.3654e-05*((npartons == 0 || npartons >= 5)*1.0 + (npartons == 1)*0.1743 + (npartons == 2)*0.3556 + (npartons == 3)*0.2273 + (npartons == 4)*0.2104) + (genbosonmass < 50.0)*numberGeneratedEventsWeight*crossSectionPerEventWeight)",
-         "z_stitching_weight"))
-DY_process_weights_nlo.append((
-        "((genbosonmass >= 50.0)*2.9688e-05 + (genbosonmass < 50.0)*numberGeneratedEventsWeight*crossSectionPerEventWeight)",
-        "z_stitching_weight"))
-
-DY_process_selection = Selection(name = "DrellYan",
-                                 weights = DY_process_weights)
-
-
-DY_nlo_process_selection = Selection(name = "DrellYan_nlo",
-                                     weights = DY_process_weights_nlo)
+def DY_base_process_selection(channel):
+    return Selection(
+            name = "DY_base",
+            weights = [
+                ("puweight", "puweight"),
+                ("idWeight_1*idWeight_2","idweight"),
+                ("isoWeight_1*isoWeight_2","isoweight"),
+                ("trackWeight_1*trackWeight_2","trackweight"),
+                #triggerweight(channel),
+                ("eleTauFakeRateWeight*muTauFakeRateWeight", "leptonTauFakeRateWeight"),
+                tau_by_iso_id_weight(channel),
+                ele_hlt_Z_vtx_weight(channel),
+                ("zPtReweightWeight", "zPtReweightWeight"),
+                ("prefiringweight", "prefireWeight"),
+                lumi_weight
+                ]
+            )
 
 
 def TT_process_selection(channel):
@@ -244,6 +235,8 @@ def HWW_process_selection(channel):
 """Built-on-top processes
 
 List of other processes adding cuts (or weights) on top of base processes:
+    - DY_process_selection
+    - DY_nlo_process_selection
     - ZTT_process_selection
     - ZTT_nlo_process_selection
     - ZTT_embedded_process_selection
@@ -266,17 +259,35 @@ List of other processes adding cuts (or weights) on top of base processes:
 """
 
 
+def DY_process_selection(channel):
+    DY_process_weights = DY_base_process_selection(channel).weights
+    DY_process_weights.append((
+        "((genbosonmass >= 50.0)*6.3654e-05*((npartons == 0 || npartons >= 5)*1.0 + (npartons == 1)*0.1743 + (npartons == 2)*0.3556 + (npartons == 3)*0.2273 + (npartons == 4)*0.2104) + (genbosonmass < 50.0)*numberGeneratedEventsWeight*crossSectionPerEventWeight)",
+         "z_stitching_weight"))
+    return Selection(name = "DY",
+                     weights = DY_process_weights)
+
+
+def DY_nlo_process_selection(channel):
+    DY_nlo_process_weights = DY_base_process_selection(channel).weights
+    DY_nlo_process_weights.append((
+        "((genbosonmass >= 50.0)*2.9688e-05 + (genbosonmass < 50.0)*numberGeneratedEventsWeight*crossSectionPerEventWeight)",
+        "z_stitching_weight"))
+    return Selection(name = "DY_nlo",
+                     weights = DY_nlo_process_weights)
+
+
 def ZTT_process_selection(channel):
     tt_cut = __get_ZTT_cut(channel)
     return Selection(name = "ZTT",
                      cuts = [(tt_cut, "ztt_cut")],
-                     weights = DY_process_selection.weights)
+                     weights = DY_process_selection(channel).weights)
 
 def ZTT_nlo_process_selection(channel):
     tt_cut = __get_ZTT_cut(channel)
     return Selection(name = "ZTT_nlo",
                      cuts = [(tt_cut, "ztt_cut")],
-                     weights = DY_nlo_process_selection.weights)
+                     weights = DY_nlo_process_selection(channel).weights)
 
 def __get_ZTT_cut(channel):
     if "mt" in channel:
@@ -343,13 +354,13 @@ def ZL_process_selection(channel):
     veto = __get_ZL_cut(channel)
     return Selection(name = "ZL",
                      cuts = [("{} && {}".format(*veto), "dy_emb_and_ff_veto")],
-                     weights = DY_process_selection.weights)
+                     weights = DY_process_selection(channel).weights)
 
 def ZL_nlo_process_selection(channel):
     veto = __get_ZL_cut(channel)
     return Selection(name = "ZL_nlo",
                      cuts = [("{} && {}".format(*veto), "dy_emb_and_ff_veto")],
-                     weights = DY_nlo_process_selection.weights)
+                     weights = DY_nlo_process_selection(channel).weights)
 
 def __get_ZL_cut(channel):
     if "mt" in channel:
@@ -374,13 +385,13 @@ def ZJ_process_selection(channel):
     veto = __get_ZJ_cut(channel)
     return Selection(name = "ZJ",
                      cuts = [(__get_ZJ_cut(channel), 'dy_fakes')],
-                     weights = DY_process_selection.weights)
+                     weights = DY_process_selection(channel).weights)
 
 def ZJ_nlo_process_selection(channel):
     veto = __get_ZJ_cut(channel)
     return Selection(name = "ZJ_nlo",
                      cuts = [(__get_ZJ_cut(channel), 'dy_fakes')],
-                     weights = DY_nlo_process_selection.weights)
+                     weights = DY_nlo_process_selection(channel).weights)
 
 def __get_ZJ_cut(channel):
     if "mt" in channel or "et" in channel:
