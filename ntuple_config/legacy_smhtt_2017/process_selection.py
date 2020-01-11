@@ -109,7 +109,8 @@ DY_process_base_weights = [
     ("trackWeight_1*trackWeight_2","trackweight"),
     ("eleTauFakeRateWeight*muTauFakeRateWeight", "leptonTauFakeRateWeight"),
     ("zPtReweightWeight", "zPtReweightWeight"),
-    ("prefiringweight", "prefireWeight")
+    ("prefiringweight", "prefireWeight"),
+    lumi_weight
     ]
 DY_process_weights = DY_process_base_weights
 DY_process_weights_nlo = DY_process_base_weights
