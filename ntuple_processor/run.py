@@ -63,6 +63,10 @@ class RunManager:
         for op in self.final_ptrs:
             op.Write()
         root_file.Close()
+        for c in self.tchains:
+            c.Reset()
+        for c in self.friend_tchains:
+            c.Reset()
 
     def __node_to_root(self, node, rdf = None):
         logger.debug('%%%%%%%%%% __node_to_root, converting from Graph to ROOT language the following node\n{}'.format(
