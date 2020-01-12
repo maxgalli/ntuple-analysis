@@ -25,7 +25,7 @@ def triggerweight(channel):
 
     singleMC = "singleTriggerMCEfficiencyWeightKIT_1"
     crossMCL = "crossTriggerMCEfficiencyWeight_1"
-    MCTau_1 = "((byTightIsolationMVArun2017v2DBoldDMwLT2017_1<0.5 && byVLooseIsolationMVArun2017v2DBoldDMwLT2017_1>0.5)*crossTriggerMCEfficiencyWeight_vloose_MVAv2_1 + (byTightIsolationMVArun2017v2DBoldDMwLT2017_1>0.5)*crossTriggerMCEfficiencyWeight_tight_MVAv2_1)"
+    MCTau_1 = "((byTightDeepTau2017v2p1VSjet_1<0.5 && byVLooseDeepTau2017v2p1VSjet_1>0.5)*crossTriggerMCEfficiencyWeight_vloose_DeepTau_1 + (byTightDeepTau2017v2p1VSjet_1>0.5)*crossTriggerMCEfficiencyWeight_tight_DeepTau_1)"
     MCTau_2 = MCTau_1.replace("_1","_2")
 
     if "mt" in channel:
@@ -109,7 +109,7 @@ def DY_base_process_selection(channel):
                 ("idWeight_1*idWeight_2","idweight"),
                 ("isoWeight_1*isoWeight_2","isoweight"),
                 ("trackWeight_1*trackWeight_2","trackweight"),
-                #triggerweight(channel),
+                triggerweight(channel),
                 ("eleTauFakeRateWeight*muTauFakeRateWeight", "leptonTauFakeRateWeight"),
                 tau_by_iso_id_weight(channel),
                 ele_hlt_Z_vtx_weight(channel),
@@ -132,7 +132,7 @@ def TT_process_selection(channel):
         ("isoWeight_1*isoWeight_2","isoweight"),
         ("trackWeight_1*trackWeight_2","trackweight"),
         ("topPtReweightWeight", "topPtReweightWeight"),
-        #triggerweight(channel),
+        triggerweight(channel),
         ("eleTauFakeRateWeight*muTauFakeRateWeight", "leptonTauFakeRateWeight"),
         tau_by_iso_id_weight(channel),
         ele_hlt_Z_vtx_weight(channel),
@@ -152,7 +152,7 @@ def VV_process_selection(channel):
         ("idWeight_1*idWeight_2","idweight"),
         ("isoWeight_1*isoWeight_2","isoweight"),
         ("trackWeight_1*trackWeight_2","trackweight"),
-        #triggerweight(channel),
+        triggerweight(channel),
         ("eleTauFakeRateWeight*muTauFakeRateWeight", "leptonTauFakeRateWeight"),
         tau_by_iso_id_weight(channel),
         ele_hlt_Z_vtx_weight(channel),
@@ -173,7 +173,7 @@ def W_process_selection(channel):
         ("idWeight_1*idWeight_2","idweight"),
         ("isoWeight_1*isoWeight_2","isoweight"),
         ("trackWeight_1*trackWeight_2","trackweight"),
-        #triggerweight(channel),
+        triggerweight(channel),
         ("eleTauFakeRateWeight*muTauFakeRateWeight", "leptonTauFakeRateWeight"),
         tau_by_iso_id_weight(channel),
         ele_hlt_Z_vtx_weight(channel),
@@ -193,7 +193,7 @@ def HTT_base_process_selection(channel):
         ("idWeight_1*idWeight_2","idweight"),
         ("isoWeight_1*isoWeight_2","isoweight"),
         ("trackWeight_1*trackWeight_2","trackweight"),
-        #triggerweight(channel),
+        triggerweight(channel),
         ("eleTauFakeRateWeight*muTauFakeRateWeight", "leptonTauFakeRateWeight"),
         tau_by_iso_id_weight(channel),
         ele_hlt_Z_vtx_weight(channel),
@@ -221,7 +221,7 @@ def HWW_process_selection(channel):
         ("idWeight_1*idWeight_2","idweight"),
         ("isoWeight_1*isoWeight_2","isoweight"),
         ("trackWeight_1*trackWeight_2","trackweight"),
-        #triggerweight(channel),
+        triggerweight(channel),
         ("eleTauFakeRateWeight*muTauFakeRateWeight", "leptonTauFakeRateWeight"),
         tau_by_iso_id_weight(channel),
         ele_hlt_Z_vtx_weight(channel),
