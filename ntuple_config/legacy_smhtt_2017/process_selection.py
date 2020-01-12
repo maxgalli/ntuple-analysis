@@ -106,12 +106,14 @@ def DY_base_process_selection(channel):
     return Selection(
             name = "DY_base",
             weights = [
+                ("generatorWeight", "generatorWeight"),
                 ("puweight", "puweight"),
                 ("idWeight_1*idWeight_2","idweight"),
                 ("isoWeight_1*isoWeight_2","isoweight"),
                 ("trackWeight_1*trackWeight_2","trackweight"),
                 triggerweight(channel),
                 ("eleTauFakeRateWeight*muTauFakeRateWeight", "leptonTauFakeRateWeight"),
+                ("(gen_match_2==1 || gen_match_2==3)*(((abs(eta_1) < 1.46) * 0.88) + ((abs(eta_1) > 1.5588) * 0.51))+!(gen_match_2==1 || gen_match_2==3)", "eletauFakeRateWeightFix"),
                 tau_by_iso_id_weight(channel),
                 ele_hlt_Z_vtx_weight(channel),
                 ("zPtReweightWeight", "zPtReweightWeight"),
@@ -169,7 +171,7 @@ def W_process_selection(channel):
     name = "W",
     weights = [
         ("generatorWeight", "generatorWeight"),
-        ("((0.0010062794683*((npartons <= 0 || npartons >= 5)*1.0 + (npartons == 1)*0.1448 + (npartons == 2)*0.0887 + (npartons == 3)*0.0540 + (npartons == 4)*0.0535)) * (genbosonmass>=0.0) + numberGeneratedEventsWeight * crossSectionPerEventWeight * (genbosonmass<0.0))", "wj_stitching_weight"),
+        ("((0.000824363*((npartons <= 0 || npartons >= 5)*1.0 + (npartons == 1)*0.1713 + (npartons == 2)*0.1062 + (npartons == 3)*0.0652 + (npartons == 4)*0.0645)) * (genbosonmass>=0.0) + numberGeneratedEventsWeight * crossSectionPerEventWeight * (genbosonmass<0.0))", "wj_stitching_weight"),
         ("puweight", "puweight"),
         ("idWeight_1*idWeight_2","idweight"),
         ("isoWeight_1*isoWeight_2","isoweight"),
@@ -186,9 +188,10 @@ def W_process_selection(channel):
 
 def HTT_base_process_selection(channel):
     return Selection(
-    name = "HTT",
+    name = "HTT_base",
     weights = [
         ("generatorWeight", "generatorWeight"),
+        ("numberGeneratedEventsWeight", "numberGeneratedEventsWeight"),
         ("crossSectionPerEventWeight", "crossSectionPerEventWeight"),
         ("puweight", "puweight"),
         ("idWeight_1*idWeight_2","idweight"),
@@ -208,7 +211,7 @@ def HTT_process_selection(channel):
     HTT_weights = HTT_base_process_selection(channel).weights + [
         ("numberGeneratedEventsWeight", "numberGeneratedEventsWeight")
         ]
-    return Selection(name = "ggH125", weights = HTT_weights)
+    return Selection(name = "HTT", weights = HTT_weights)
 
 
 def HWW_process_selection(channel):
@@ -263,8 +266,7 @@ List of other processes adding cuts (or weights) on top of base processes:
 def DY_process_selection(channel):
     DY_process_weights = DY_base_process_selection(channel).weights
     DY_process_weights.append((
-        "((genbosonmass >= 50.0)*6.3654e-05*((npartons == 0 || npartons >= 5)*1.0 + (npartons == 1)*0.1743 + (npartons == 2)*0.3556 + (npartons == 3)*0.2273 + (npartons == 4)*0.2104) + (genbosonmass < 50.0)*numberGeneratedEventsWeight*crossSectionPerEventWeight)",
-         "z_stitching_weight"))
+        "((genbosonmass >= 50.0)*6.2139e-05*((npartons == 0 || npartons >= 5)*1.0 + (npartons == 1)*0.1743 + (npartons == 2)*0.3556 + (npartons == 3)*0.2273 + (npartons == 4)*0.2104) + (genbosonmass < 50.0)*numberGeneratedEventsWeight*crossSectionPerEventWeight)","z_stitching_weight"))
     return Selection(name = "DY",
                      weights = DY_process_weights)
 
@@ -272,8 +274,7 @@ def DY_process_selection(channel):
 def DY_nlo_process_selection(channel):
     DY_nlo_process_weights = DY_base_process_selection(channel).weights
     DY_nlo_process_weights.append((
-        "((genbosonmass >= 50.0)*2.9688e-05 + (genbosonmass < 50.0)*numberGeneratedEventsWeight*crossSectionPerEventWeight)",
-        "z_stitching_weight"))
+        "((genbosonmass >= 50.0) * 2.8982e-05 + (genbosonmass < 50.0)*numberGeneratedEventsWeight*crossSectionPerEventWeight)","z_stitching_weight"))
     return Selection(name = "DY_nlo",
                      weights = DY_nlo_process_weights)
 
