@@ -191,8 +191,6 @@ def HTT_base_process_selection(channel):
     name = "HTT_base",
     weights = [
         ("generatorWeight", "generatorWeight"),
-        ("numberGeneratedEventsWeight", "numberGeneratedEventsWeight"),
-        ("crossSectionPerEventWeight", "crossSectionPerEventWeight"),
         ("puweight", "puweight"),
         ("idWeight_1*idWeight_2","idweight"),
         ("isoWeight_1*isoWeight_2","isoweight"),
@@ -210,6 +208,7 @@ def HTT_base_process_selection(channel):
 def HTT_process_selection(channel):
     HTT_weights = HTT_base_process_selection(channel).weights + [
         ("numberGeneratedEventsWeight", "numberGeneratedEventsWeight")
+        ("crossSectionPerEventWeight", "crossSectionPerEventWeight"),
         ]
     return Selection(name = "HTT", weights = HTT_weights)
 
@@ -531,13 +530,25 @@ def ttH_process_selection(channel):
 
 def ggH125_process_selection(channel):
     ggH125_weights = HTT_base_process_selection(channel).weights + [
-        ("8.22976e-8", "numberGeneratedEventsWeight"),
         ("ggh_NNLO_weight", "gghNNLO"),
-        ("1.01", "bbh_inclusion_weight")
+        ("1.01", "bbh_inclusion_weight"),
+        ("((htxs_stage1p1cat==100||htxs_stage1p1cat==102||htxs_stage1p1cat==103)*crossSectionPerEventWeight*8.210e-8+"
+            "(htxs_stage1p1cat==101)*2.17e-8+"
+            "(htxs_stage1p1cat==104||htxs_stage1p1cat==105)*4.39e-8+"
+            "(htxs_stage1p1cat==106)*1.19e-8+"
+            "(htxs_stage1p1cat>=107&&htxs_stage1p1cat<=109)*4.91e-8+"
+            "(htxs_stage1p1cat>=110&&htxs_stage1p1cat<=113)*7.90e-9"
+            ")","ggh_stitching_weight")
         ]
     return Selection(name = "ggH125", weights = ggH125_weights)
 
 
 def qqH125_process_selection(channel):
-    return Selection(name = "qqH125",
-                     weights = HTT_process_selection(channel).weights)
+    qqH125_weights = HTT_base_process_selection(channel).weights + [
+        ("(((htxs_stage1p1cat>=200&&htxs_stage1p1cat<=202)||abs(crossSectionPerEventWeight-0.05544)<0.001||abs(crossSectionPerEventWeight-0.052685)<0.001||abs(crossSectionPerEventWeight-0.03342)<0.001)*crossSectionPerEventWeight*numberGeneratedEventsWeight+(abs(crossSectionPerEventWeight-0.05544)>=0.001&&abs(crossSectionPerEventWeight-0.052685)>=0.001&&abs(crossSectionPerEventWeight-0.03342)>=0.001)*("
+            "(htxs_stage1p1cat>=203&&htxs_stage1p1cat<=205)*8.70e-9+"
+            "(htxs_stage1p1cat==206)*8.61e-9+"
+            "(htxs_stage1p1cat>=207&&htxs_stage1p1cat<=210)*1.79e-8"
+            "))","qqh_stitching_weight")
+        ]
+    return Selection(name = "qqH125", weights = qqH125_weights)
