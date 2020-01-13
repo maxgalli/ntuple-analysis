@@ -1,3 +1,13 @@
+##### Data #####
+
+data_query = {
+    "data": True,
+    "campaign": "Run2017(B|C|D|E|F)",
+    "scenario": "31Mar2018v1",
+    "process": "SingleMuon"
+}
+
+
 ##### DYJetsToLL #####
 
 queryM10 = {
