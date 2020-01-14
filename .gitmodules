@@ -1,0 +1,6 @@
+[submodule "ntuple_config"]
+	path = ntuple_config
+	url = https://github.com/KIT-CMS/ntuple_config.git
+[submodule "ntuple_processor"]
+	path = ntuple_processor
+	url = https://github.com/KIT-CMS/ntuple_processor.git
